@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Categories table
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique @db.VarChar(50)
+  color       String   @db.VarChar(7) // hex color code
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  tasks       Task[]
+
+  @@map("categories")
+}
+
+// Tasks table
+model Task {
+  id          String      @id @default(cuid())
+  name        String      @db.VarChar(100)
+  description String?     @db.VarChar(500)
+  priority    Priority    @default(MEDIUM)
+  status      TaskStatus  @default(TODO)
+  dueDate     DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  categoryId  String?
+  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@map("tasks")
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+  @@index([createdAt])
+}
+
+// Enums
+enum Priority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum TaskStatus {
+  TODO          // 未着手
+  IN_PROGRESS   // 着手中
+  COMPLETED     // 完了
+}

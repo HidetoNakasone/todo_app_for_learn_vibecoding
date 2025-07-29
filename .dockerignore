@@ -1,0 +1,13 @@
+.devcontainer
+.dockerignore
+.DS_Store
+.env*
+.git
+.gitignore
+.next
+.vscode
+npm-debug.log*
+node_modules
+README.md
+Dockerfile
+docs

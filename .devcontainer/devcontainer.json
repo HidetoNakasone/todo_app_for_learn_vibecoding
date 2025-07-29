@@ -1,0 +1,83 @@
+{
+  // Dev Container の名前
+  "name": "TODO App Development",
+
+  // 使用するDocker Compose ファイル
+  "dockerComposeFile": ["../compose.yaml"],
+
+  // 接続するサービス名（compose.yamlのappサービス）
+  "service": "app",
+
+  // コンテナ内でのワークスペースフォルダ
+  "workspaceFolder": "/app",
+
+  // VSCode のカスタマイズ設定
+  "customizations": {
+    "vscode": {
+      // 自動インストールする拡張機能（信頼性・セキュリティ重視）
+      "extensions": [
+        // Microsoft公式
+        "ms-vscode.vscode-typescript-next",    // TypeScript & JavaScript（Microsoft公式）
+        "ms-vscode.vscode-eslint",             // ESLint（Microsoft公式）
+        "ms-vscode.vscode-json",               // JSON Language Features（Microsoft公式）
+        "ms-vscode.vscode-docker",             // Docker（Microsoft公式）
+
+        // 大手企業・高信頼性（数百万ダウンロード）
+        "esbenp.prettier-vscode",              // Prettier（1000万+ DL、著名開発者）
+        "bradlc.vscode-tailwindcss",           // Tailwind CSS（500万+ DL、Tailwind公式協力）
+        "Prisma.prisma",                       // Prisma（Prisma社公式、100万+ DL）
+
+        // 代替として信頼性の高い拡張機能
+        "ms-vscode.vscode-html-language-features", // HTML言語サポート（Microsoft公式）
+        "ms-vscode.vscode-css-language-features"   // CSS言語サポート（Microsoft公式）
+      ],
+
+      // VSCode の設定
+      "settings": {
+        // TypeScript の設定
+        "typescript.preferences.preferTypeOnlyAutoImports": true,
+
+        // エディタの設定
+        "editor.defaultFormatter": "esbenp.prettier-vscode",  // デフォルトフォーマッター
+        "editor.formatOnSave": true,                          // 保存時の自動フォーマット
+
+        // 保存時の自動アクション
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",     // ESLint の自動修正
+          "source.organizeImports": "explicit"    // インポートの自動整理
+        },
+
+        // ファイル表示から除外するフォルダ
+        "files.exclude": {
+          "**/node_modules": true,
+          "**/.next": true,
+          "**/dist": true
+        },
+
+        // 検索から除外するフォルダ
+        "search.exclude": {
+          "**/node_modules": true,
+          "**/.next": true,
+          "**/dist": true,
+          "**/coverage": true
+        }
+      }
+    }
+  },
+
+  // ホストに転送するポート
+  "forwardPorts": [3000],
+
+  // ポートの設定
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js App",
+      "onAutoForward": "notify"  // 自動転送時に通知
+    },
+    // "5432": {
+    //   "label": "PostgreSQL Database"
+    // }
+  },
+  // コンテナ内で使用するユーザー
+  "remoteUser": "root"
+}
