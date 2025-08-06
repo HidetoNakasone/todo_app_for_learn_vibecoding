@@ -34,7 +34,10 @@
 
         "Anthropic.claude-code" // Claude Code（Anthropic公式、AIコード補完）
       ]
-    }
+    },
+
+    // VSCode設定は .vscode/settings.json に統合済み
+    "settings": {}
   },
 
   // コンテナ起動後に実行するコマンド
@@ -42,5 +45,5 @@
   "postStartCommand": "echo 'alias claude=\"npx claude\"' >> ~/.bashrc",
 
   // コンテナ内で使用するユーザー
-  "remoteUser": "root"
+  "remoteUser": "devuser"
 }

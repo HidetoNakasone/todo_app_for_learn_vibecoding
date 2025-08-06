@@ -7,6 +7,38 @@ set -e
 
 echo "🚀 本番環境をセットアップしています..."
 
+# .envファイルの準備
+if [ ! -f .env ]; then
+  echo "📝 .envファイルを自動生成しています..."
+  cp .env.example .env
+else
+  echo "ℹ️  .envファイルは既に存在しています"
+fi
+
+# 現在のユーザーID/グループIDを取得
+CURRENT_USER_ID=$(id -u)
+CURRENT_GROUP_ID=$(id -g)
+
+# 既存のUSER_ID/GROUP_ID設定を削除（重複回避）
+sed -i '' '/^USER_ID=/d' .env
+sed -i '' '/^GROUP_ID=/d' .env
+sed -i '' '/^# Docker User Settings/d' .env
+
+# 余分な空行を削除（連続する空行を1つにまとめる）
+sed -i '' '/^$/N;/^\n$/d' .env
+
+# NODE_ENVを本番環境用に確認・設定
+sed -i '' 's/NODE_ENV="development"/NODE_ENV="production"/' .env
+
+# 新しい設定を追加
+echo "" >> .env
+echo "# Docker User Settings (auto-generated)" >> .env
+echo "USER_ID=${CURRENT_USER_ID}" >> .env
+echo "GROUP_ID=${CURRENT_GROUP_ID}" >> .env
+
+echo "✅ USER_ID/GROUP_IDを設定しました (USER_ID=${CURRENT_USER_ID}, GROUP_ID=${CURRENT_GROUP_ID})"
+echo "✅ NODE_ENVを本番環境用に設定しました"
+
 # clean up
 docker compose -f compose.prd.yaml down -v
 
@@ -22,6 +54,9 @@ echo "⏳ データベースの起動を待機しています..."
 until docker compose -f compose.prd.yaml exec db pg_isready -U postgres -d todo_app; do
   sleep 1
 done
+
+# node_modules の権限を修正（本番環境）
+docker compose -f compose.prd.yaml exec -u root app sh -c 'chown -R devuser:$(id -gn devuser) /app/node_modules 2>/dev/null || true'
 
 # 依存関係インストール
 echo "📦  依存関係をインストールしています..."
