@@ -65,6 +65,8 @@ docker compose -f compose.prd.yaml exec app sh -c 'bun install'
 # Prisma セットアップ
 echo "🔧 Prisma のセットアップを行っています..."
 docker compose -f compose.prd.yaml exec app sh -c 'bun prisma migrate deploy'
+# Prisma クライアントの生成 (Prismaを利用するために必要)
+docker compose -f compose.prd.yaml exec app sh -c 'bun prisma generate'
 
 # アプリケーションビルド
 echo "🏗️ アプリケーションをビルドしています..."

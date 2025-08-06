@@ -17,6 +17,8 @@ services:
     volumes:
       - .:/app
       - node_modules:/app/node_modules
+      - generated:/app/src/generated
+      - next_build:/app/.next
     networks:
       - app_network
     restart: always
@@ -46,6 +48,8 @@ volumes:
   postgres_data:
     driver: local
   node_modules:
+  generated:
+  next_build:
 
 networks:
   app_network:
