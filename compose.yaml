@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: test-next-js-app
     environment:
-      - DATABASE_URL=postgresql://postgres:bMvyDbVFRuSA355QiewQ@test-next-js-db:5432/todo_app
+      - DATABASE_URL=${DATABASE_URL}
     ports:
       - "3000:3000"
     depends_on:
@@ -25,7 +25,7 @@ services:
     environment:
       - POSTGRES_DB=todo_app
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=bMvyDbVFRuSA355QiewQ
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-defaultpassword}
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
       - TZ=Asia/Tokyo
     volumes:
