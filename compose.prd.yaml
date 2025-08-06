@@ -17,6 +17,7 @@ services:
     networks:
       - app_network
     restart: always
+    tty: true
 
   db:
     image: postgres:15-alpine
