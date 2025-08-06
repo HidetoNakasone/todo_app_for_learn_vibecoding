@@ -42,3 +42,6 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# personal AI character settings
+_GenAIキャラクター設定.md

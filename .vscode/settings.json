@@ -1,5 +1,44 @@
 {
+  // set bash as the default terminal profile
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "/bin/bash"
+    }
+  },
+
+  // prisma の設定
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+
+  // TypeScript の設定
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+
+  // エディタの設定
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // デフォルトフォーマッター
+  "editor.formatOnSave": true, // 保存時の自動フォーマット
+
+  // 保存時の自動アクション
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit", // ESLint の自動修正
+    "source.organizeImports": "explicit" // インポートの自動整理
+  },
+
+  // ファイル表示から除外するフォルダ
+  "files.exclude": {
+    "**/node_modules": false, // node_modules は表示
+    "**/.next": false, // .next フォルダは表示
+    "**/.git": true,
+    "**/dist": true
+  },
+
+  // 検索から除外するフォルダ
+  "search.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/coverage": true
   }
 }
