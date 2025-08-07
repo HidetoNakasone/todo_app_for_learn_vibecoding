@@ -83,7 +83,8 @@ until docker compose -f compose.prd.yaml exec db pg_isready -U postgres -d todo_
 done
 
 # node_modules の権限を修正（本番環境）
-docker compose -f compose.prd.yaml exec -u root app sh -c 'chown -R devuser:$(id -gn devuser) /app/node_modules 2>/dev/null || true'
+# 実際のユーザー名を動的に取得して使用
+docker compose -f compose.prd.yaml exec -u root app sh -c 'ACTUAL_USER=$(getent passwd ${USER_ID:-1000} | cut -d: -f1); chown -R ${ACTUAL_USER}:$(id -gn ${ACTUAL_USER}) /app/node_modules 2>/dev/null || true'
 
 # 依存関係インストール
 echo "📦  依存関係をインストールしています..."
