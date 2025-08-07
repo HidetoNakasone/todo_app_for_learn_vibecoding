@@ -19,16 +19,28 @@ fi
 CURRENT_USER_ID=$(id -u)
 CURRENT_GROUP_ID=$(id -g)
 
+# OS互換性のためのsed関数を定義
+# macOS: sed -i '' 形式, Linux/WSL2: sed -i 形式
+sed_inplace() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "$@"
+  else
+    # Linux (including Ubuntu, CentOS, WSL2/Ubuntu)
+    sed -i "$@"
+  fi
+}
+
 # 既存のUSER_ID/GROUP_ID設定を削除（重複回避）
-sed -i '' '/^USER_ID=/d' .env
-sed -i '' '/^GROUP_ID=/d' .env
-sed -i '' '/^# Docker User Settings/d' .env
+sed_inplace '/^USER_ID=/d' .env
+sed_inplace '/^GROUP_ID=/d' .env
+sed_inplace '/^# Docker User Settings/d' .env
 
 # 余分な空行を削除（連続する空行を1つにまとめる）
-sed -i '' '/^$/N;/^\n$/d' .env
+sed_inplace '/^$/N;/^\n$/d' .env
 
 # NODE_ENVを本番環境用に確認・設定
-sed -i '' 's/NODE_ENV="development"/NODE_ENV="production"/' .env
+sed_inplace 's/NODE_ENV="development"/NODE_ENV="production"/' .env
 
 # DB_PASSWORDを自動生成
 if grep -q "your_secure_password_here" .env; then
@@ -38,7 +50,7 @@ if grep -q "your_secure_password_here" .env; then
   DB_PASSWORD=$(openssl rand -base64 12 | tr -d "=+/" | cut -c1-16)
   
   # DB_PASSWORDを置換
-  sed -i '' "s/your_secure_password_here/$DB_PASSWORD/g" .env
+  sed_inplace "s/your_secure_password_here/$DB_PASSWORD/g" .env
   
   echo "✅ データベースパスワードを自動生成・設定しました"
 else
