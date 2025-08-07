@@ -45,13 +45,13 @@ sed_inplace 's/NODE_ENV="development"/NODE_ENV="production"/' .env
 # DB_PASSWORDを自動生成
 if grep -q "your_secure_password_here" .env; then
   echo "🔐 安全なデータベースパスワードを自動生成しています..."
-  
+
   # 16文字のランダムパスワード生成（英数字記号）
   DB_PASSWORD=$(openssl rand -base64 12 | tr -d "=+/" | cut -c1-16)
-  
+
   # DB_PASSWORDを置換
   sed_inplace "s/your_secure_password_here/$DB_PASSWORD/g" .env
-  
+
   echo "✅ データベースパスワードを自動生成・設定しました"
 else
   echo "ℹ️  データベースパスワードは既に設定されています"
@@ -96,6 +96,9 @@ docker compose -f compose.prd.yaml exec app sh -c 'bun prisma migrate deploy'
 
 # src/generated ディレクトリの権限を確認・修正
 docker compose -f compose.prd.yaml exec -u root app sh -c 'ACTUAL_USER=$(getent passwd ${USER_ID:-1000} | cut -d: -f1); mkdir -p /app/src/generated && chown -R ${ACTUAL_USER}:$(id -gn ${ACTUAL_USER}) /app/src 2>/dev/null || true'
+
+# .next ディレクトリの権限を確認・修正（ビルド前に必要）
+docker compose -f compose.prd.yaml exec -u root app sh -c 'ACTUAL_USER=$(getent passwd ${USER_ID:-1000} | cut -d: -f1); mkdir -p /app/.next && chown -R ${ACTUAL_USER}:$(id -gn ${ACTUAL_USER}) /app/.next 2>/dev/null || true'
 
 # Prisma クライアントの生成 (Prismaを利用するために必要)
 docker compose -f compose.prd.yaml exec app sh -c 'bun prisma generate'
