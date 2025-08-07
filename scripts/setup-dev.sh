@@ -94,6 +94,10 @@ docker compose -f compose.yaml exec app sh -c 'bun install'
 echo "🔧 Prisma のセットアップを行っています..."
 # `prisma/migrations` ディレクトリが存在しない場合は作成し、存在する場合はDBへマイグレーションを適用
 docker compose -f compose.yaml exec app sh -c 'bun prisma migrate dev'
+
+# src/generated ディレクトリの権限を確認・修正
+docker compose -f compose.yaml exec -u root app sh -c 'ACTUAL_USER=$(getent passwd ${USER_ID:-1000} | cut -d: -f1); mkdir -p /app/src/generated && chown -R ${ACTUAL_USER}:$(id -gn ${ACTUAL_USER}) /app/src 2>/dev/null || true'
+
 # Prisma クライアントの生成 (Prismaを利用するために必要)
 docker compose -f compose.yaml exec app sh -c 'bun prisma generate'
 

@@ -40,8 +40,10 @@ RUN GROUP_NAME=$(getent group ${GROUP_ID} | cut -d: -f1 || echo "") && \
 
 # アプリケーションディレクトリの所有者を適切なユーザーに変更
 # これにより root 権限でのファイル操作を避け、セキュリティを向上
+# src/generatedディレクトリも事前に作成して適切な権限を設定
 RUN USER_NAME=$(getent passwd ${USER_ID} | cut -d: -f1 || echo "devuser") && \
     GROUP_NAME=$(getent group ${GROUP_ID} | cut -d: -f1 || echo "devuser") && \
+    mkdir -p /app/src/generated && \
     chown -R ${USER_NAME}:${GROUP_NAME} /app
 
 # 以降のコマンドは指定されたユーザーとして実行
