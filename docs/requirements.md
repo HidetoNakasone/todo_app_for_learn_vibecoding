@@ -15,12 +15,12 @@
 ## 技術要件
 
 ### フロントエンド
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
 - **UI Library**: shadcn/ui
-  - **CSS Library**: Tailwind CSS
+  - **CSS Library**: Tailwind CSS v4
 - **Validation**: Zod
-- **Styling**: Tailwind CSS
+- **React**: React 19
 
 ### バックエンド
 - **API**: Next.js API Routes

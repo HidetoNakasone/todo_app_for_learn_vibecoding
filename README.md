@@ -26,12 +26,12 @@ Next.js + TypeScript + PostgreSQL を使用したモダンな TODO アプリケ�
 - データベース設計
 - セキュリティ・パフォーマンス考慮事項
 
-### 4. [Docker 構成設計](./docs/docker-setup.md)
+### 4. [Docker環境最適化とOneDrive対応](./docs/environment-optimization.md)
 
-- Docker Compose 設定
-- デプロイメント構成
-- 運用スクリプト
-- モニタリング設定
+- Docker Anonymous Volume による環境分離
+- 開発・本番環境での課題解決
+- OneDrive同期負荷軽減対策
+- 環境セットアップ最適化
 
 ## 開発の進め方
 
@@ -77,12 +77,11 @@ Next.js + TypeScript + PostgreSQL を使用したモダンな TODO アプリケ�
 #### 1. セットアップスクリプト実行
 
 ```shell
-# 環境変数を設定
-cp .env.example .env.local
-vim .env
-
-# 実行
+# セットアップスクリプトが .env ファイルを自動生成します
 bash ./scripts/setup-dev.sh
+
+# 必要に応じて環境変数を調整
+vim .env
 ```
 
 #### 2. devcontainer 起動
@@ -105,20 +104,24 @@ scp コマンドなどを利用してファイルを PRD Env. へ転送する
 #### 2. "セットアップ & 起動スクリプト" を実行
 
 ```bash
-# 環境変数を設定
-cp .env.example .env
-vim .env
-
-# 実行
+# セットアップスクリプトが .env ファイルを自動生成します
 bash ./scripts/setup-prd.sh
+
+# 必要に応じて本番環境用の環境変数を調整
+vim .env
 ```
 
 ### 🔧 トラブルシューティング
 
-#### スクリプトに実行権限がない場合
+#### スクリプトファイルについて
+
+スクリプトファイルには実行権限がありませんが、bash コマンドで直接実行できます。
+これは環境間での権限の一貫性を保つための設計です。
 
 ```bash
-chmod +x scripts/*.sh
+# 実行権限がなくても以下で実行可能
+bash ./scripts/setup-dev.sh
+bash ./scripts/setup-prd.sh
 ```
 
 #### Docker ネットワークが既に存在する場合
@@ -165,11 +168,9 @@ git pull
 ### 2. 本番用のセットアップスクリプトを実行し Docker コンテナは起動する
 
 ```shell
-cp .env.example .env
-
-# edit .env
-vim .env
-
-# セットアップスクリプトを実行して Docker コンテナを起動
+# セットアップスクリプトが .env ファイルを自動生成・Docker コンテナを起動
 bash ./scripts/setup-prd.sh
+
+# 必要に応じて本番環境用の環境変数を調整後、再起動
+vim .env
 ```

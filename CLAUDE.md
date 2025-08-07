@@ -17,15 +17,13 @@ npm run start        # 本番サーバー起動
 npm run lint         # ESLintによるコード品質チェック
 ```
 
-### Docker 開発環境セットアップ
+### 開発環境セットアップ
+
+詳細なセットアップ手順は [README.md](./README.md) を参照してください。
 
 ```bash
-# 開発環境セットアップ（プロジェクトルートから実行）
+# 基本的なセットアップ
 bash ./scripts/setup-dev.sh
-
-# 手動Dockerコマンド
-docker compose -f compose.yaml up -d --build    # 全サービスのビルドと起動
-docker compose -f compose.yaml down -v          # ボリューム含めコンテナ停止・削除
 ```
 
 ### データベース操作
@@ -120,7 +118,7 @@ src/
 
 - プロジェクトではコンテナ内で Bun をパッケージマネージャーとして使用
 - VSCode 開発用の Dev Container セットアップが利用可能
-- 環境変数は `.env` ファイルで設定
+- 詳細なセットアップ手順・トラブルシューティングは [README.md](./README.md) を参照
 - データベース初期化はセットアップスクリプトで自動処理
 
 ### 隠しファイル確認の重要性

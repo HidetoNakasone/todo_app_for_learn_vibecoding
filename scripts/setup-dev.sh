@@ -30,6 +30,21 @@ sed -i '' '/^$/N;/^\n$/d' .env
 # NODE_ENVを開発環境用に設定
 sed -i '' 's/NODE_ENV="production"/NODE_ENV="development"/' .env
 
+# DB_PASSWORDを自動生成
+if grep -q "your_secure_password_here" .env; then
+  echo "🔐 安全なデータベースパスワードを自動生成しています..."
+  
+  # 16文字のランダムパスワード生成（英数字記号）
+  DB_PASSWORD=$(openssl rand -base64 12 | tr -d "=+/" | cut -c1-16)
+  
+  # DB_PASSWORDを置換
+  sed -i '' "s/your_secure_password_here/$DB_PASSWORD/g" .env
+  
+  echo "✅ データベースパスワードを自動生成・設定しました"
+else
+  echo "ℹ️  データベースパスワードは既に設定されています"
+fi
+
 # 新しい設定を追加
 echo "" >> .env
 echo "# Docker User Settings (auto-generated)" >> .env
