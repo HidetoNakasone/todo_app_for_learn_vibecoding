@@ -29,12 +29,21 @@ RUN GROUP_NAME=$(getent group ${GROUP_ID} | cut -d: -f1 || echo "") && \
     addgroup -g ${GROUP_ID} devuser && GROUP_NAME=devuser; \
   fi && \
   # GROUP_NAMEが設定済み = 既存グループ利用、空なら新作成したdevuserグループ利用
-  adduser -u ${USER_ID} -G ${GROUP_NAME} -D -s /bin/bash devuser
+  # UID競合がある場合は既存ユーザーを利用
+  if ! adduser -u ${USER_ID} -G ${GROUP_NAME} -D -s /bin/bash devuser 2>/dev/null; then \
+    echo "UID ${USER_ID} already exists, using existing user"; \
+    EXISTING_USER=$(getent passwd ${USER_ID} | cut -d: -f1); \
+    if [ -n "$EXISTING_USER" ] && [ "$EXISTING_USER" != "devuser" ]; then \
+      echo "Using existing user: $EXISTING_USER"; \
+    fi; \
+  fi
 
-# アプリケーションディレクトリの所有者を devuser に変更
+# アプリケーションディレクトリの所有者を適切なユーザーに変更
 # これにより root 権限でのファイル操作を避け、セキュリティを向上
-RUN chown -R devuser:$(id -gn devuser) /app
+RUN USER_NAME=$(getent passwd ${USER_ID} | cut -d: -f1 || echo "devuser") && \
+    GROUP_NAME=$(getent group ${GROUP_ID} | cut -d: -f1 || echo "devuser") && \
+    chown -R ${USER_NAME}:${GROUP_NAME} /app
 
-# 以降のコマンドは devuser として実行
+# 以降のコマンドは指定されたユーザーとして実行
 # セキュリティベストプラクティス: コンテナ内で root を使わない
-USER devuser
+USER ${USER_ID}:${GROUP_ID}
