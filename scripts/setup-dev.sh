@@ -70,7 +70,8 @@ echo "✅ NODE_ENVを開発環境用に設定しました"
 docker compose -f compose.yaml down -v
 rm -rf ./node_modules
 rm -rf ./src/generated
-rm -rf ./src/.next
+rm -rf ./.next
+rm -rf ./.serena
 
 # Docker Container 起動
 docker compose -f compose.yaml up -d --build
@@ -96,6 +97,10 @@ docker compose -f compose.yaml exec app bash -ic 'sudo mkdir -p /app/src/generat
 # .next ディレクトリの権限を確認・修正（将来のビルドに備えて）
 echo "🔧 .next ディレクトリの権限を修正しています..."
 docker compose -f compose.yaml exec app bash -ic 'sudo mkdir -p /app/.next && sudo chown -R ${USER_ID}:${GROUP_ID} /app/.next'
+
+# .serena ディレクトリの権限を確認・修正
+echo "🔧 .serena ディレクトリの権限を修正しています..."
+docker compose -f compose.yaml exec app bash -ic 'sudo mkdir -p /app/.serena && sudo chown -R ${USER_ID}:${GROUP_ID} /app/.serena'
 
 # 依存関係インストール
 echo "📦  依存関係をインストールしています..."

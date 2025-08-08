@@ -70,7 +70,7 @@ echo "✅ NODE_ENVを本番環境用に設定しました"
 docker compose -f compose.prd.yaml down -v
 rm -rf ./node_modules
 rm -rf ./src/generated
-rm -rf ./src/.next
+rm -rf ./.next
 
 # Docker Container 起動
 docker compose -f compose.prd.yaml up -d --build

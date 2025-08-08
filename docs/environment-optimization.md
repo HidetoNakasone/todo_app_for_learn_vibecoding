@@ -92,6 +92,7 @@ docker compose -f compose.prd.yaml exec app sh -c 'bun prisma generate'  # 自�
 | `node_modules/` | パッケージ依存関係 | `bun install` | 大量ファイル、バイナリ競合 |
 | `src/generated/` | Prisma生成ファイル | `bun prisma generate` | バイナリファイル、環境依存 |
 | `.next/` | Next.jsビルドキャッシュ | `bun run build/dev` | キャッシュ、時間・環境依存 |
+| `.serena/` | Serena MCP設定・メモリ | オンボーディング実行 | 個人環境依存、キャッシュ |
 
 ## メンテナンス
 
@@ -99,7 +100,7 @@ docker compose -f compose.prd.yaml exec app sh -c 'bun prisma generate'  # 自�
 
 1. **既存ディレクトリの削除**:
 ```bash
-rm -rf /app/src/generated /app/.next
+rm -rf /app/src/generated /app/.next /app/.serena
 ```
 
 2. **Docker Compose の再起動**:
