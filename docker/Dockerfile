@@ -1,18 +1,16 @@
-FROM node:24-alpine
+FROM ubuntu:24.04
 
 # 必要なパッケージをインストール
 # bash: シェルスクリプト実行用
 # git: バージョン管理
 # libc6-compat: Node.js の互換性確保
 # curl: HTTP リクエスト用
-RUN apk update && \
-  apk add --no-cache bash git libc6-compat curl
+# sudo: 管理者権限実行用
+RUN apt-get update -y && \
+  apt-get install -y --no-install-recommends \
+  bash git libc6-dev curl sudo
 
-WORKDIR /app
-
-# Bun パッケージマネージャーをインストール
-# プロジェクトでは npm より高速な Bun を使用
-RUN npm install -g bun@latest
+WORKDIR /var/tmp
 
 # ユーザーとグループの UID/GID を設定可能にする
 # 開発環境: ホスト OS のユーザー権限に合わせて Docker 権限問題を回避
@@ -26,26 +24,41 @@ ARG GROUP_ID=1000
 RUN GROUP_NAME=$(getent group ${GROUP_ID} | cut -d: -f1 || echo "") && \
   if [ -z "$GROUP_NAME" ]; then \
     # GROUP_NAMEが空 = 指定IDのグループが存在しない → 新規作成
-    addgroup -g ${GROUP_ID} devuser && GROUP_NAME=devuser; \
+    groupadd -g ${GROUP_ID} devuser && GROUP_NAME=devuser; \
   fi && \
   # GROUP_NAMEが設定済み = 既存グループ利用、空なら新作成したdevuserグループ利用
   # UID競合がある場合は既存ユーザーを利用
-  if ! adduser -u ${USER_ID} -G ${GROUP_NAME} -D -s /bin/bash devuser 2>/dev/null; then \
+  if ! useradd -u ${USER_ID} -g ${GROUP_NAME} -m -s /bin/bash devuser 2>/dev/null; then \
     echo "UID ${USER_ID} already exists, using existing user"; \
     EXISTING_USER=$(getent passwd ${USER_ID} | cut -d: -f1); \
     if [ -n "$EXISTING_USER" ] && [ "$EXISTING_USER" != "devuser" ]; then \
       echo "Using existing user: $EXISTING_USER"; \
     fi; \
-  fi
-
-# アプリケーションディレクトリの所有者を適切なユーザーに変更
-# これにより root 権限でのファイル操作を避け、セキュリティを向上
-# src/generatedディレクトリも事前に作成して適切な権限を設定
-RUN USER_NAME=$(getent passwd ${USER_ID} | cut -d: -f1 || echo "devuser") && \
-    GROUP_NAME=$(getent group ${GROUP_ID} | cut -d: -f1 || echo "devuser") && \
-    mkdir -p /app/src/generated && \
-    chown -R ${USER_NAME}:${GROUP_NAME} /app
+  fi && \
+  # devuserにsudo権限を付与（パスワードなしでsudoを実行可能）
+  echo "devuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # 以降のコマンドは指定されたユーザーとして実行
-# セキュリティベストプラクティス: コンテナ内で root を使わない
 USER ${USER_ID}:${GROUP_ID}
+
+# install mise (arm64)
+RUN sudo apt install -y gpg sudo wget curl
+RUN sudo install -dm 755 /etc/apt/keyrings
+RUN wget -qO - https://mise.jdx.dev/gpg-key.pub | gpg --dearmor | sudo tee /etc/apt/keyrings/mise-archive-keyring.gpg 1> /dev/null
+RUN echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=arm64] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
+RUN sudo apt update
+RUN sudo apt install -y mise
+
+# register path
+RUN echo 'export PATH="$HOME/.local/share/mise/shims:$PATH"' >> ~/.bashrc
+
+# Node.js のインストール
+RUN mise install node@24
+RUN mise use -g node@24
+
+# Bun パッケージマネージャーをインストール
+# プロジェクトでは npm より高速な Bun を使用
+RUN mise install bun@latest
+RUN mise use -g bun@latest
+
+WORKDIR /app

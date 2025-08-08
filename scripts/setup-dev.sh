@@ -68,6 +68,9 @@ echo "✅ NODE_ENVを開発環境用に設定しました"
 
 # clean up
 docker compose -f compose.yaml down -v
+rm -rf ./node_modules
+rm -rf ./src/generated
+rm -rf ./src/.next
 
 # Docker Container 起動
 docker compose -f compose.yaml up -d --build
@@ -82,26 +85,34 @@ until docker compose -f compose.yaml exec db pg_isready -U postgres -d todo_app;
   sleep 1
 done
 
-# node_modules の権限を修正（開発環境のみ）
-# 実際のユーザー名を動的に取得して使用
-docker compose -f compose.yaml exec -u root app sh -c 'ACTUAL_USER=$(getent passwd ${USER_ID:-1000} | cut -d: -f1); chown -R ${ACTUAL_USER}:$(id -gn ${ACTUAL_USER}) /app/node_modules 2>/dev/null || true'
+# node_modules の権限を修正
+echo "🔧 node_modules の権限を修正しています..."
+docker compose -f compose.yaml exec app bash -ic 'sudo chown -R ${USER_ID}:${GROUP_ID} /app/node_modules'
+
+# src/generated ディレクトリの権限を確認・修正
+echo "🔧 src/generated ディレクトリの権限を修正しています..."
+docker compose -f compose.yaml exec app bash -ic 'sudo mkdir -p /app/src/generated && sudo chown -R ${USER_ID}:${GROUP_ID} /app/src/generated'
+
+# .next ディレクトリの権限を確認・修正（将来のビルドに備えて）
+echo "🔧 .next ディレクトリの権限を修正しています..."
+docker compose -f compose.yaml exec app bash -ic 'sudo mkdir -p /app/.next && sudo chown -R ${USER_ID}:${GROUP_ID} /app/.next'
 
 # 依存関係インストール
 echo "📦  依存関係をインストールしています..."
-docker compose -f compose.yaml exec app sh -c 'bun install'
+docker compose -f compose.yaml exec app bash -ic 'bun install'
 
 # Prisma セットアップ
 echo "🔧 Prisma のセットアップを行っています..."
 # `prisma/migrations` ディレクトリが存在しない場合は作成し、存在する場合はDBへマイグレーションを適用
-docker compose -f compose.yaml exec app sh -c 'bun prisma migrate dev'
-
-# src/generated ディレクトリの権限を確認・修正
-docker compose -f compose.yaml exec -u root app sh -c 'ACTUAL_USER=$(getent passwd ${USER_ID:-1000} | cut -d: -f1); mkdir -p /app/src/generated && chown -R ${ACTUAL_USER}:$(id -gn ${ACTUAL_USER}) /app/src 2>/dev/null || true'
-
-# .next ディレクトリの権限を確認・修正（将来のビルドに備えて）
-docker compose -f compose.yaml exec -u root app sh -c 'ACTUAL_USER=$(getent passwd ${USER_ID:-1000} | cut -d: -f1); mkdir -p /app/.next && chown -R ${ACTUAL_USER}:$(id -gn ${ACTUAL_USER}) /app/.next 2>/dev/null || true'
+docker compose -f compose.yaml exec app bash -ic 'bun prisma migrate dev'
 
 # Prisma クライアントの生成 (Prismaを利用するために必要)
-docker compose -f compose.yaml exec app sh -c 'bun prisma generate'
+docker compose -f compose.yaml exec app bash -ic 'bun prisma generate'
+
+# Install Claude Code
+docker compose -f compose.yaml exec app bash -ic 'npm i -g @anthropic-ai/claude-code && echo "alias claude=\"npx claude\"" >> ~/.bashrc'
+
+# Install uv (for Serena MCP Server)
+docker compose -f compose.yaml exec app bash -ic 'curl -LsSf https://astral.sh/uv/install.sh | sh'
 
 echo "✅ 開発環境のセットアップが完了しました！"

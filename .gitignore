@@ -46,3 +46,7 @@ next-env.d.ts
 # personal AI character settings
 _GenAIキャラクター設定.md
 _GenAIとの会話履歴.md
+
+# Claude Code & Serena personal settings
+.claude/
+.serena/
