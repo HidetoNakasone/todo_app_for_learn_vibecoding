@@ -50,3 +50,6 @@ _GenAIとの会話履歴.md
 # Claude Code & Serena personal settings
 .claude/
 .serena/
+nohup.out
+*.wav
+/logs

@@ -121,3 +121,56 @@ docker compose -f compose.yaml exec app bash -ic 'npm i -g @anthropic-ai/claude-
 docker compose -f compose.yaml exec app bash -ic 'curl -LsSf https://astral.sh/uv/install.sh | sh'
 
 echo "✅ 開発環境のセットアップが完了しました！"
+echo ""
+echo "🎵 VOICEVOX 音声システムの起動"
+echo "----------------------------------------"
+echo "VOICEVOX 音声システムを起動しますか？"
+echo "（Claude の返答を音声で聞くことができるようになります）"
+echo ""
+
+# ユーザー入力待機
+while true; do
+    read -p "VOICEVOX 音声システムを起動しますか？ (y/N): " yn
+    case $yn in
+        [Yy]* | [Yy][Ee][Ss]* ) 
+            echo ""
+            echo "🚀 VOICEVOX 音声システムを起動しています..."
+            if nohup bash scripts/start-voicevox-system.sh > /dev/null 2>&1 &
+            then
+                echo "✅ VOICEVOX 音声システムが起動しました！"
+                echo ""
+                echo "📊 確認方法:"
+                echo "  - API: http://localhost:50023/docs"
+                echo "  - ログ: tail -f logs/voicevox-engine.log"
+                echo ""
+                echo "🎤 Claude Code を起動してください："
+                echo "  claude"
+                echo ""
+                echo "⏹️  システム停止時は以下のコマンドを実行してください："
+                echo "  bash scripts/stop-voicevox-system.sh"
+            else
+                echo "❌ VOICEVOX 音声システムの起動に失敗しました"
+                echo "手動起動: nohup bash scripts/start-voicevox-system.sh &"
+            fi
+            break
+            ;;
+        [Nn]* | [Nn][Oo]* | "" ) 
+            echo ""
+            echo "ℹ️  VOICEVOX 音声システムをスキップしました"
+            echo ""
+            echo "後で起動する場合："
+            echo "  nohup bash scripts/start-voicevox-system.sh &"
+            echo ""
+            echo "🎤 Claude Code を起動してください："
+            echo "  claude"
+            echo ""
+            echo "💡 Tips: システム停止時は bash scripts/stop-voicevox-system.sh を実行してください"
+            break
+            ;;
+        * ) 
+            echo "y(yes) または n(no) で回答してください"
+            ;;
+    esac
+done
+
+echo ""

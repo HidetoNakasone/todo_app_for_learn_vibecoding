@@ -2,8 +2,26 @@
   "mcpServers": {
     "serena": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide-assistant"],
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
       "env": {}
+    },
+    "voicevox": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@kajidog/mcp-tts-voicevox"
+      ],
+      "env": {
+        "VOICEVOX_URL": "http://host.docker.internal:50023"
+      }
     }
   }
 }
