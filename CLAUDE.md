@@ -4,7 +4,12 @@
 
 ## プロジェクト概要
 
-Next.js 15、TypeScript、PostgreSQL、Prisma ORM を使用したモダンな TODO アプリケーションです。Docker コンテナでの実行を前提として設計され、スタイリングには TailwindCSS を使用しています。4 週間の開発プロジェクトとして構成され、包括的なドキュメントが用意されています。
+Next.js 15、TypeScript、PostgreSQL、Prisma ORM を使用したモダンな TODO アプリケーションです。Docker コンテナでの実行を前提として設計され、スタイリングには TailwindCSS を使用しています。
+
+**詳細情報**：
+- プロジェクト全体概要：[README.md](./README.md)
+- 要件・設計書：[docs/ ディレクトリ](./docs/)
+- 技術学習記録：[docs/tech_note/](./docs/tech_note/)
 
 ## 開発コマンド
 
@@ -19,12 +24,15 @@ npm run lint         # ESLintによるコード品質チェック
 
 ### 開発環境セットアップ
 
-詳細なセットアップ手順は [README.md](./README.md) を参照してください。
-
 ```bash
-# 基本的なセットアップ
+# 基本的なセットアップ（.env 自動生成・Docker起動）
 bash ./scripts/setup-dev.sh
+
+# VSCode Dev Container で開発開始
+code . # → Dev Containers: Reopen in Container
 ```
+
+**詳細手順・トラブルシューティング**：[README.md](./README.md) または [docs/environment-optimization.md](./docs/environment-optimization.md) を参照
 
 ### データベース操作
 
