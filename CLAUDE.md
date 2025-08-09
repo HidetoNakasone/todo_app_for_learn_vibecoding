@@ -7,6 +7,7 @@
 Next.js 15、TypeScript、PostgreSQL、Prisma ORM を使用したモダンな TODO アプリケーションです。Docker コンテナでの実行を前提として設計され、スタイリングには TailwindCSS を使用しています。
 
 **詳細情報**：
+
 - プロジェクト全体概要：[README.md](./README.md)
 - 要件・設計書：[docs/ ディレクトリ](./docs/)
 - 技術学習記録：[docs/tech_note/](./docs/tech_note/)
@@ -213,6 +214,21 @@ Serena MCP サーバーを使用している場合、以下のタイミングで
 - **理由**: チーム開発での共有を考慮し、誰でも理解できる公式ツール名を使用
 - **対象**: `docs/tech_note/` 配下の全技術学習記録ファイル
 
+## コミットメッセージルール
+
+### 基本ルール（Conventional Commits 準拠）
+
+```bash
+# 対話式コミット（推奨）
+# git commit の代わりにこちらを利用してください (対話型でコミットメッセージを作成してくれます)
+bunx cz
+
+# 手動コミット
+git commit -m "feat(todo): タスク優先度設定機能を追加"
+```
+
+**詳細ルール**: [docs/tech_note/git-commit-message-rules-2025.md](./docs/tech_note/git-commit-message-rules-2025.md)
+
 ## VOICEVOX 音声システム運用ルール
 
 ### 音声生成の推奨方法
@@ -230,6 +246,6 @@ Serena MCP サーバーを使用している場合、以下のタイミングで
 
 ### 開発環境での注意事項
 
-- devcontainer 内では VOICEVOX Engine は起動不可（Docker in Docker制約）
+- devcontainer 内では VOICEVOX Engine は起動不可（Docker in Docker 制約）
 - MCP サーバー設定（.mcp.json）は devcontainer 内で有効
 - 音声ファイル生成・再生はホスト機とのファイル共有で実現
