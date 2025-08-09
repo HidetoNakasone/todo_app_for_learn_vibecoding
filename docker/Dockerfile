@@ -41,11 +41,15 @@ RUN GROUP_NAME=$(getent group ${GROUP_ID} | cut -d: -f1 || echo "") && \
 # 以降のコマンドは指定されたユーザーとして実行
 USER ${USER_ID}:${GROUP_ID}
 
-# install mise (arm64)
+# install mise
 RUN sudo apt install -y gpg sudo wget curl
 RUN sudo install -dm 755 /etc/apt/keyrings
 RUN wget -qO - https://mise.jdx.dev/gpg-key.pub | gpg --dearmor | sudo tee /etc/apt/keyrings/mise-archive-keyring.gpg 1> /dev/null
-RUN echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=arm64] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
+
+# mise リポジトリをホストアーキテクチャに応じて自動設定
+ARG TARGETARCH
+RUN echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=${TARGETARCH}] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
+
 RUN sudo apt update
 RUN sudo apt install -y mise
 
