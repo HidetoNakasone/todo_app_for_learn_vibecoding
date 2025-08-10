@@ -5,15 +5,18 @@ Next.js 15 + TypeScript + PostgreSQL を使用したモダンな TODO アプリ�
 ## 📚 ドキュメント
 
 ### 設計・要件書
+
 - [要件定義書](./docs/requirements.md) - プロジェクト概要と目的、技術要件
 - [機能要件書](./docs/functional-requirements.md) - 詳細な機能仕様、UI/UX要件
 - [アーキテクチャ設計書](./docs/architecture.md) - システム設計、データベース設計
 
 ### 環境・運用
+
 - [Docker環境最適化](./docs/environment-optimization.md) - 環境分離・セットアップ最適化
 - [開発者向けガイド (CLAUDE.md)](./CLAUDE.md) - 開発コマンド・運用ルール
 
 ### 技術学習記録
+
 - [バイブコーディングガイド](./docs/tech_note/claude-vibe-coding-complete-guide-2025.md)
 - [Serena MCP サーバー活用法](./docs/tech_note/serena-mcp-server-basics.md)
 - [VOICEVOX 音声システム](./docs/tech_note/voicevox-setup-guide.md)
@@ -45,7 +48,7 @@ bash ./scripts/setup-prd.sh
 ## 📋 前提条件
 
 - Node.js 18+
-- Docker & Docker Compose  
+- Docker & Docker Compose
 - Git
 - VSCode (推奨)
 

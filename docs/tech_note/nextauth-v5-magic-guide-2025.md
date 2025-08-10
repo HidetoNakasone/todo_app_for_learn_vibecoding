@@ -11,12 +11,14 @@ Next.js 15 TODO アプリの Phase 1 実装中に体験した NextAuth.js v5 の
 ## 実装体験での驚き
 
 ### 🎯 **期待していたこと**
+
 - 複雑な OAuth フローの実装
 - 大量のボイラープレートコード（Validationのような類似処理を自分で実装する手間を削減できる）
 - セキュリティ対策の個別実装
 - UI コンポーネントの自作
 
 ### 🚀 **実際に起こったこと**
+
 ```typescript
 // auth.ts に Provider を追加しただけ
 providers: [
@@ -28,7 +30,7 @@ providers: [
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   }),
-]
+];
 ```
 
 → **完全なSSO システムが自動生成！**
@@ -42,9 +44,10 @@ providers: [
 ```
 
 **処理されるエンドポイント**：
+
 - `/api/auth/signin` - サインインページ
 - `/api/auth/signout` - サインアウト
-- `/api/auth/callback/github` - GitHub OAuth コールバック  
+- `/api/auth/callback/github` - GitHub OAuth コールバック
 - `/api/auth/callback/google` - Google OAuth コールバック
 - `/api/auth/session` - セッション情報取得
 - `/api/auth/providers` - プロバイダー一覧
@@ -53,11 +56,12 @@ providers: [
 
 ```typescript
 // route.ts の全内容
-import { handlers } from "@/auth"
-export const { GET, POST } = handlers
+import { handlers } from "@/auth";
+export const { GET, POST } = handlers;
 ```
 
 **このたった3行で**：
+
 - ✅ OAuth フロー完全実装
 - ✅ セキュリティ対策（PKCE, CSRF, State）
 - ✅ セッション管理
@@ -67,12 +71,14 @@ export const { GET, POST } = handlers
 ### 3. **自動生成される機能**
 
 #### **UI の自動生成**
+
 - 美しいデフォルトサインインページ
 - プロバイダー別ブランドカラー適用
 - レスポンシブデザイン
 - アクセシビリティ対応
 
 #### **セキュリティ機能**
+
 ```bash
 # 自動実装されるセキュリティ
 - PKCE (Proof Key for Code Exchange)
@@ -83,6 +89,7 @@ export const { GET, POST } = handlers
 ```
 
 #### **OAuth フロー**
+
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -102,6 +109,7 @@ sequenceDiagram
 ## 設計思想の理解
 
 ### **設定の一元化**
+
 ```typescript
 // ✅ 設定はすべて auth.ts に集約
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -127,7 +135,7 @@ GitHubProvider({
 
 // これらが自動生成される
 - /api/auth/signin/github
-- /api/auth/callback/github  
+- /api/auth/callback/github
 - GitHub OAuth フロー
 - GitHub スタイルボタン
 - ユーザー情報取得
@@ -137,22 +145,24 @@ GitHubProvider({
 ## 実装時の重要な発見
 
 ### 1. **Import 文の正しい形式**
+
 ```typescript
 // ✅ NextAuth.js v5 beta の推奨形式
-import GitHubProvider from "next-auth/providers/github"
-import GoogleProvider from "next-auth/providers/google"
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 // ❌ 古い形式（v4 では使用可能）
-import GitHub from "next-auth/providers/github"
+import GitHub from "next-auth/providers/github";
 ```
 
 ### 2. **環境変数の設定**
+
 ```bash
 # OAuth Provider Settings
 GITHUB_CLIENT_ID=""      # 設定後に OAuth が有効化
-GITHUB_CLIENT_SECRET=""  
-GOOGLE_CLIENT_ID=""      
-GOOGLE_CLIENT_SECRET=""  
+GITHUB_CLIENT_SECRET=""
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
 
 # セキュリティ設定
 AUTH_TRUST_HOST=false    # 厳格なセキュリティモード
@@ -161,6 +171,7 @@ NEXTAUTH_URL="http://localhost:3000"  # 信頼するホスト
 ```
 
 ### 3. **デバッグログの活用**
+
 ```bash
 # 開発環境で表示される詳細ログ
 [auth][debug]: authorization url is ready {
@@ -176,16 +187,19 @@ NEXTAUTH_URL="http://localhost:3000"  # 信頼するホスト
 ## 本番環境での使用
 
 ### **Scalability（スケーラビリティ）**
+
 - Netflix, Spotify, Slack など**大企業が同じ3行の route.ts を使用**
 - 月間数億リクエストに対応可能
 - 自動スケーリング対応
 
 ### **Security（セキュリティ）**
+
 - Enterprise レベルのセキュリティ標準
 - 定期的なセキュリティアップデート
 - CVE 対応の迅速性
 
 ### **Maintenance（保守性）**
+
 - プロバイダー追加は設定のみ
 - アップデートは npm update のみ
 - 互換性の維持
@@ -193,10 +207,11 @@ NEXTAUTH_URL="http://localhost:3000"  # 信頼するホスト
 ## まとめ：なぜ「魔法」と呼ぶのか
 
 ### **従来の認証実装**
+
 ```typescript
 // 数百行〜数千行のコード
 - OAuth フロー手動実装
-- セキュリティ対策を個別実装  
+- セキュリティ対策を個別実装
 - UI コンポーネント自作
 - セッション管理自作
 - エラーハンドリング自作
@@ -205,26 +220,27 @@ NEXTAUTH_URL="http://localhost:3000"  # 信頼するホスト
 ```
 
 ### **NextAuth.js v5**
+
 ```typescript
 // たった数行
 providers: [
   GitHubProvider({ clientId, clientSecret }),
   GoogleProvider({ clientId, clientSecret }),
-]
+];
 ```
 
 **結果**：同等以上の機能が完全自動実装
 
 ### **開発者体験の革命**
 
-| 項目 | 従来 | NextAuth.js v5 |
-|------|------|----------------|
-| 実装時間 | 2-4週間 | 数時間 |
-| コード量 | 1000+ 行 | 10-20行 |
-| セキュリティ | 手動実装 | 自動対応 |
-| UI 作成 | 手動作成 | 自動生成 |
-| テスト | 手動作成 | ライブラリ自体が検証済み |
-| 保守 | 継続的 | 最小限 |
+| 項目         | 従来     | NextAuth.js v5           |
+| ------------ | -------- | ------------------------ |
+| 実装時間     | 2-4週間  | 数時間                   |
+| コード量     | 1000+ 行 | 10-20行                  |
+| セキュリティ | 手動実装 | 自動対応                 |
+| UI 作成      | 手動作成 | 自動生成                 |
+| テスト       | 手動作成 | ライブラリ自体が検証済み |
+| 保守         | 継続的   | 最小限                   |
 
 ## 次のステップ
 

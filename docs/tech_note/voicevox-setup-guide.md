@@ -3,6 +3,7 @@
 **作成日**: 2025-08-09  
 **記録者**: Claude Code  
 **更新履歴**:
+
 - 2025-08-09: 詳細な使用法・設定・活用例を追加した完全版に更新
 
 ## プロジェクト起動手順
@@ -38,6 +39,7 @@ mcp__voicevox__synthesize_file "/app/output.wav" "読み上げたいテキスト
 ```
 
 **例**:
+
 ```bash
 # 基本的な使用法（四国めたん:ノーマル）
 mcp__voicevox__synthesize_file "/app/hello.wav" "こんにちは、世界！" 2
@@ -66,14 +68,16 @@ mcp__voicevox__stop_speaker "dummy"
 ### 人気キャラクター
 
 #### 四国めたん（関西弁系）
+
 - **ノーマル**: `speaker: 2` - 標準的な話し方
-- **あまあま**: `speaker: 0` - 甘えた話し方  
+- **あまあま**: `speaker: 0` - 甘えた話し方
 - **ツンツン**: `speaker: 6` - ツンデレな話し方
 - **セクシー**: `speaker: 4` - 大人っぽい話し方
 - **ささやき**: `speaker: 36` - 小声でささやく
 - **ヒソヒソ**: `speaker: 37` - 内緒話風
 
 #### ずんだもん（東北弁系）
+
 - **ノーマル**: `speaker: 3` - 標準的な話し方
 - **あまあま**: `speaker: 1` - 甘えた話し方
 - **ツンツン**: `speaker: 7` - ツンデレな話し方
@@ -82,11 +86,13 @@ mcp__voicevox__stop_speaker "dummy"
 - **なみだめ**: `speaker: 76` - 泣いている感じ
 
 #### 東北三姉妹
+
 - **東北ずん子**: `speaker: 107` - 東北弁の姉
 - **東北きりたん**: `speaker: 108` - 東北弁の妹
 - **東北イタコ**: `speaker: 109` - 霊媒師キャラ
 
 #### その他の特徴的なキャラクター
+
 - **春日部つむぎ**: `speaker: 8` - 落ち着いた女性
 - **九州そら**: `speaker: 16` - 九州弁系女性
 - **No.7**: `speaker: 29` - ロボット系（アナウンス向き）
@@ -96,6 +102,7 @@ mcp__voicevox__stop_speaker "dummy"
 #### コーディング用途別音声
 
 **成功通知**:
+
 ```bash
 # 喜びの表現
 mcp__voicevox__synthesize_file "/app/success.wav" "ビルド成功！" 32  # 白上虎太郎:わーい
@@ -103,6 +110,7 @@ mcp__voicevox__synthesize_file "/app/success.wav" "テスト通過！" 79  # も
 ```
 
 **エラー通知**:
+
 ```bash
 # 悲しみ・絶望の表現
 mcp__voicevox__synthesize_file "/app/error.wav" "エラーが発生しました" 98   # 中部つるぎ:絶望と敗北
@@ -110,6 +118,7 @@ mcp__voicevox__synthesize_file "/app/error.wav" "コンパイルエラー" 41   
 ```
 
 **デバッグ・説明用**:
+
 ```bash
 # 冷静な解説
 mcp__voicevox__synthesize_file "/app/explain.wav" "バグの原因を説明します" 31  # No.7:読み聞かせ
@@ -117,6 +126,7 @@ mcp__voicevox__synthesize_file "/app/debug.wav" "プロセスを実況します"
 ```
 
 **アラート・警告**:
+
 ```bash
 # 注意喚起
 mcp__voicevox__synthesize_file "/app/warning.wav" "注意してください！" 34    # 白上虎太郎:おこ
@@ -211,7 +221,7 @@ mcp__voicevox__synthesize_file "/app/deploy_success.wav" "デプロイ成功だ�
 # VOICEVOX Engine のログ
 tail -f logs/voicevox-engine.log
 
-# 音声再生システムのログ  
+# 音声再生システムのログ
 tail -f logs/voice-player.log
 
 # エラーが発生している場合の詳細確認
@@ -221,16 +231,19 @@ curl http://localhost:50023/docs
 ## システム仕様・制限事項
 
 ### リソース要件
+
 - **Docker**: 最新版推奨
 - **メモリ**: 2GB以上推奨（音声モデル読み込み用）
 - **ストレージ**: 音声ファイル保存用に十分な空き容量
 
 ### 対応環境
+
 - **macOS**: 13 (Ventura) 以降
 - **音声出力**: macOS の afplay コマンド使用
 - **ファイル監視**: fswatch 使用（Homebrew でインストール）
 
 ### パフォーマンス最適化
+
 - 生成された音声ファイルは3秒後に自動削除
 - 同時に5つ以上の音声ファイルが存在する場合、古いものを自動削除
 - バックグラウンドプロセスでの効率的なリソース管理
@@ -238,6 +251,7 @@ curl http://localhost:50023/docs
 ---
 
 **関連ドキュメント**:
+
 - [バイブコーディング完全ガイド](./claude-vibe-coding-complete-guide-2025.md)
 - [AI レスポンス読み上げガイド](./ai-response-tts-guide-2025.md)
 

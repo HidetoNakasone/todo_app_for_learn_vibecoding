@@ -1,21 +1,24 @@
-import { auth, signIn, signOut } from "@/auth"
+import { auth, signIn, signOut } from "@/auth";
 
 export default async function AuthButton() {
-  const session = await auth()
+  const session = await auth();
 
   if (session?.user) {
     return (
       <form
         action={async () => {
-          "use server"
-          await signOut()
+          "use server";
+          await signOut();
         }}
         className="inline"
       >
         <div className="flex items-center gap-4">
           {(session.user.name || session.user.email) && (
             <p className="text-sm text-gray-600">
-              Signed in as <span className="font-medium">{session.user.name || session.user.email}</span>
+              Signed in as{" "}
+              <span className="font-medium">
+                {session.user.name || session.user.email}
+              </span>
             </p>
           )}
           <button
@@ -26,14 +29,14 @@ export default async function AuthButton() {
           </button>
         </div>
       </form>
-    )
+    );
   }
 
   return (
     <form
       action={async () => {
-        "use server"
-        await signIn()
+        "use server";
+        await signIn();
       }}
       className="inline"
     >
@@ -44,5 +47,5 @@ export default async function AuthButton() {
         Sign in
       </button>
     </form>
-  )
+  );
 }

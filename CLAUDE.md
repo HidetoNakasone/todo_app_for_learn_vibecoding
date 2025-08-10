@@ -177,7 +177,6 @@ bunx tsc --noEmit
 
 3. `docs/` ディレクトリ内のドキュメント - プロジェクト設計書類
    プロジェクトの全体像、要件、アーキテクチャを理解するため、以下のファイルを読み込んでください：
-
    - `docs/architecture.md` - システムアーキテクチャ設計書
    - `docs/functional-requirements.md` - 機能要件書
    - `docs/requirements.md` - 要件定義書

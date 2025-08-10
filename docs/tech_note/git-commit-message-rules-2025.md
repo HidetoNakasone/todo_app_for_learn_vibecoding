@@ -33,12 +33,14 @@
 ## Prefix Types（必須）
 
 ### コア prefixes
+
 - `feat:` - 新機能追加
 - `fix:` - バグ修正
 - `docs:` - ドキュメント変更のみ
 - `refactor:` - 機能を変えないコード整理
 
-### サポート prefixes  
+### サポート prefixes
+
 - `style:` - フォーマット・空白調整（機能変更なし）
 - `test:` - テスト追加・修正
 - `chore:` - ツール・設定・メンテナンス作業
@@ -51,7 +53,7 @@
 
 ```bash
 feat(auth): ユーザーログイン機能を追加
-fix(api): タスク削除時の404エラーを修正  
+fix(api): タスク削除時の404エラーを修正
 docs(readme): セットアップ手順を更新
 refactor(components): TaskCard を分離
 ```
@@ -59,11 +61,13 @@ refactor(components): TaskCard を分離
 ## 破壊的変更（Breaking Changes）
 
 ### 方法1: Type に `!` を追加
+
 ```bash
 feat!: APIレスポンス形式を変更（破壊的変更）
 ```
 
 ### 方法2: Footer に明記
+
 ```bash
 feat: 新認証システム導入
 
@@ -73,10 +77,11 @@ BREAKING CHANGE: 旧APIトークンは無効になります
 ## 実用例
 
 ### 良い例 ✅
+
 ```bash
 feat(todo): タスク優先度設定機能を追加
 fix(auth): ログイン時のセッション切れを修正
-docs: README.mdの重複内容を整理  
+docs: README.mdの重複内容を整理
 refactor(api): エラーハンドリングを統一
 style: ESLint ルールに従ってフォーマット調整
 test: TaskCard コンポーネントのテストを追加
@@ -86,6 +91,7 @@ ci: GitHub Actions でテスト自動化
 ```
 
 ### 悪い例 ❌
+
 ```bash
 Fixed login bug (動詞が過去形)
 Add new feature (prefix なし)
@@ -96,6 +102,7 @@ WIP: work in progress (作業中コミット)
 ## 自動化ツール（推奨）
 
 ### commitlint + husky
+
 ```bash
 # インストール
 npm install --save-dev @commitlint/config-conventional @commitlint/cli
@@ -110,6 +117,7 @@ npx husky add .husky/commit-msg 'npx --no -- commitlint --edit ${1}'
 ```
 
 ### Commitizen（対話式コミット）
+
 ```bash
 npm install --save-dev commitizen cz-conventional-changelog
 npx commitizen init cz-conventional-changelog --save-dev --save-exact
@@ -121,7 +129,7 @@ npx commitizen init cz-conventional-changelog --save-dev --save-exact
 # 新機能のみを検索
 git log --grep="feat:"
 
-# バグ修正のみを検索  
+# バグ修正のみを検索
 git log --grep="fix:"
 
 # 特定スコープの変更を検索
@@ -156,6 +164,7 @@ bun install
 ### 日常的なコミット方法
 
 #### 方法1: Commitizen を使用（推奨）
+
 ```bash
 # ステージング
 git add .
@@ -169,6 +178,7 @@ bunx cz
 ```
 
 #### 方法2: 手動でルールに従う
+
 ```bash
 git commit -m "feat(todo): タスク優先度設定機能を追加"
 # commitlint が自動チェック。ルール違反なら拒否される
@@ -177,8 +187,9 @@ git commit -m "feat(todo): タスク優先度設定機能を追加"
 ### コミットルールの詳細
 
 #### 利用可能な scope（プロジェクト固有）
+
 - `auth` - 認証機能
-- `todo` - TODO機能  
+- `todo` - TODO機能
 - `api` - API関連
 - `ui` - UI/UX
 - `db` - データベース
@@ -189,6 +200,7 @@ git commit -m "feat(todo): タスク優先度設定機能を追加"
 - `deps` - 依存関係
 
 #### コミットメッセージ例
+
 ```bash
 feat(auth): ユーザーログイン機能を追加
 fix(api): タスク削除時の404エラーを修正
@@ -200,6 +212,7 @@ test(todo): タスク作成機能のテストを追加
 ### トラブルシューティング
 
 #### コミットが拒否された場合
+
 ```bash
 ❌ commitlint failed:
 ⧗   input: add new stuff
@@ -210,6 +223,7 @@ git commit -m "feat(todo): 新機能を追加"
 ```
 
 #### husky が動作しない場合
+
 ```bash
 # husky を再初期化
 bunx husky install
