@@ -104,8 +104,8 @@ model Account {
 | `type`              | String  | OAuth の種類。oauth または oidc               | `"oauth"`, `"oidc"`                 |
 | `provider`          | String  | OAuth プロバイダー名                          | `"github"`, `"google"`              |
 | `providerAccountId` | String  | プロバイダー側のユーザーID                    | `"41560892"` (GitHub のユーザーID)  |
-| `refresh_token`     | String? | 長期間有効なトークン。access_token更新用      | `"ghr_xxxxxxxxxxxxx..."`                |
-| `access_token`      | String? | API アクセス用の短期トークン                  | `"ghu_xxxxxxxxxxxxx..."`                 |
+| `refresh_token`     | String? | 長期間有効なトークン。access_token更新用      | `"ghr_xxxxxxxxxxxxx..."`            |
+| `access_token`      | String? | API アクセス用の短期トークン                  | `"ghu_xxxxxxxxxxxxx..."`            |
 | `expires_at`        | Int?    | access_token の有効期限（UNIXタイムスタンプ） | `1754836802`                        |
 | `token_type`        | String? | トークンの種類。通常は bearer                 | `"bearer"`                          |
 | `scope`             | String? | 許可された権限のスコープ                      | `"userinfo.email userinfo.profile"` |
