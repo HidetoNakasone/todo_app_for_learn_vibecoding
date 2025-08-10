@@ -66,6 +66,26 @@ echo "GROUP_ID=${CURRENT_GROUP_ID}" >> .env
 echo "✅ USER_ID/GROUP_IDを設定しました (USER_ID=${CURRENT_USER_ID}, GROUP_ID=${CURRENT_GROUP_ID})"
 echo "✅ NODE_ENVを開発環境用に設定しました"
 
+# .mcp.json の生成 (.mcp.json.example から環境変数置換)
+if [ -f .mcp.json.example ]; then
+  echo "🔧 .mcp.json を .mcp.json.example から生成しています..."
+  
+  # .env から DB_PASSWORD を取得
+  DB_PASSWORD=$(grep "^DB_PASSWORD=" .env | cut -d '=' -f2 | tr -d '"')
+  
+  if [ -z "$DB_PASSWORD" ]; then
+    echo "❌ DB_PASSWORD が .env ファイルに見つかりません"
+    exit 1
+  fi
+  
+  # テンプレートファイルから .mcp.json を生成
+  sed "s/\${DB_PASSWORD}/$DB_PASSWORD/g" .mcp.json.example > .mcp.json
+  
+  echo "✅ .mcp.json を生成しました"
+else
+  echo "ℹ️  .mcp.json.example が見つからないため、スキップしました"
+fi
+
 # clean up
 docker compose -f compose.yaml down -v
 rm -rf ./node_modules

@@ -15,12 +15,17 @@
     "voicevox": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "-y",
-        "@kajidog/mcp-tts-voicevox"
-      ],
+      "args": ["-y", "@kajidog/mcp-tts-voicevox"],
       "env": {
         "VOICEVOX_URL": "http://host.docker.internal:50023"
+      }
+    },
+    "postgresql": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "DATABASE_URL": "postgresql://postgres:${DB_PASSWORD}@db:5432/todo_app"
       }
     }
   }
