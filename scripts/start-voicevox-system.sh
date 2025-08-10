@@ -94,32 +94,55 @@ cd "$PROJECT_DIR"
 PLAYED_FILES="/tmp/voicevox_played_$$"
 touch "$PLAYED_FILES"
 
+# 音声再生ロックファイル
+LOCK_FILE="/tmp/voicevox_playing_$$"
+
 # デバッグ用ログ記録を追加
 echo "🔊 音声監視システム開始: $(date)" >> "$LOG_DIR/voice-player.log"
 
 fswatch -o . --include=".*\.wav$" | while read; do
     # 最新の.wavファイルを取得（シンプルで確実な方法）
     latest=$(ls -t *.wav 2>/dev/null | head -1)
-    
+
     # ファイルが検出された時のみログ出力
     if [ -n "$latest" ] && [ -f "$latest" ] && ! grep -q "^$latest$" "$PLAYED_FILES" 2>/dev/null; then
         echo "$latest" >> "$PLAYED_FILES"
-        echo "$(date '+%H:%M:%S') 🔊 再生開始: $(basename "$latest")" >> "$LOG_DIR/voice-player.log"
-        
-        # WSL2環境では安全な音声再生
-        if [[ "$PLAY_CMD" == "powershell.exe -Command" ]]; then
-            # WindowsのPowerShellでSoundPlayerを使用（安全な方法）
-            win_path=$(wslpath -w "$latest")
-            echo "$(date '+%H:%M:%S') Windows音声再生: $win_path" >> "$LOG_DIR/voice-player.log"
-            powershell.exe -Command "try { (New-Object Media.SoundPlayer '$win_path').PlaySync() } catch { Write-Host 'Audio playback failed' }" 2>/dev/null &
-        else
-            # その他の環境
-            echo "$(date '+%H:%M:%S') 他環境音声再生: $PLAY_CMD" >> "$LOG_DIR/voice-player.log"
-            $PLAY_CMD "$latest" &
-        fi
+        echo "$(date '+%H:%M:%S') 🎵 ファイル検出: $(basename "$latest")" >> "$LOG_DIR/voice-player.log"
 
-        # 再生後3秒待ってからファイル削除
-        (sleep 3 && rm -f "$latest") &
+        # ロックファイルチェック - 他の音声が再生中なら待機
+        while [ -f "$LOCK_FILE" ]; do
+            # echo "$(date '+%H:%M:%S') ⏳ 他の音声再生中、待機: $(basename "$latest")" >> "$LOG_DIR/voice-player.log"
+            sleep 0.01
+        done
+
+        # ロックファイル作成
+        touch "$LOCK_FILE"
+        echo "$(date '+%H:%M:%S') 🔒 ロック取得: $(basename "$latest")" >> "$LOG_DIR/voice-player.log"
+
+        # バックグラウンドで音声再生とロック解除処理
+        (
+            echo "$(date '+%H:%M:%S') 🔊 再生開始: $(basename "$latest")" >> "$LOG_DIR/voice-player.log"
+
+            # WSL2環境では安全な音声再生
+            if [[ "$PLAY_CMD" == "powershell.exe -Command" ]]; then
+                # WindowsのPowerShellでSoundPlayerを使用（同期再生）
+                win_path=$(wslpath -w "$latest")
+                powershell.exe -Command "try { (New-Object Media.SoundPlayer '$win_path').PlaySync() } catch { Write-Host 'Audio playback failed' }" 2>/dev/null
+            else
+                # その他の環境 - 音声ファイルの長さを推定して待機
+                $PLAY_CMD "$latest" 2>/dev/null
+            fi
+
+            echo "$(date '+%H:%M:%S') ✅ 再生完了: $(basename "$latest")" >> "$LOG_DIR/voice-player.log"
+
+            # ロックファイル削除
+            rm -f "$LOCK_FILE"
+            echo "$(date '+%H:%M:%S') 🔓 ロック解放: $(basename "$latest")" >> "$LOG_DIR/voice-player.log"
+
+            # 音声ファイル削除（再生完了後なので即座に削除）
+            rm -f "$latest"
+            echo "$(date '+%H:%M:%S') 🗑️  ファイル削除: $(basename "$latest")" >> "$LOG_DIR/voice-player.log"
+        ) &
     fi
 done 2>&1 &
 
