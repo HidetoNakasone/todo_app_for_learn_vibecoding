@@ -1,4 +1,5 @@
 import Image from "next/image";
+import AuthButton from "@/app/_components/AuthButton";
 
 export default function Home() {
   return (
@@ -12,16 +13,16 @@ export default function Home() {
           height={38}
           priority
         />
+        <div className="mb-8">
+          <AuthButton />
+        </div>
+
         <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
           <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
+            NextAuth.js v5 セットアップ完了！上のボタンで認証をテストしてください。
           </li>
           <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
+            現在はプロバイダーが設定されていないため、基本的なログイン画面が表示されます。
           </li>
         </ol>
 

@@ -14,17 +14,145 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ==========================================
+// NextAuth.js v5 認証テーブル
+// ==========================================
+
+// Users table (NextAuth.js required)
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // NextAuth.js relations
+  accounts      Account[]
+  sessions      Session[]
+
+  // Application relations (Phase 2+)
+  tasks         Task[]
+  categories    Category[]
+  
+  // Team relations (Phase 4) - コメントアウトで後で有効化
+  // teamMemberships TeamMember[]
+  // ownedTeams      Team[] @relation("TeamOwner")
+
+  @@map("users")
+}
+
+// Accounts table (NextAuth.js required - OAuth providers)
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// Sessions table (NextAuth.js required)
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// Verification tokens (NextAuth.js required - password reset etc.)
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verificationtokens")
+}
+
+// ==========================================
+// Phase 4: チーム管理テーブル (コメントアウト)
+// ==========================================
+
+// Team table (Phase 4で有効化)
+// model Team {
+//   id          String   @id @default(cuid())
+//   name        String   @db.VarChar(100)
+//   description String?  @db.VarChar(500)
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+//
+//   // Relations
+//   ownerId     String
+//   owner       User @relation("TeamOwner", fields: [ownerId], references: [id])
+//   members     TeamMember[]
+//   tasks       Task[]
+//   categories  Category[]
+//
+//   @@map("teams")
+// }
+
+// Team members table (Phase 4で有効化)  
+// model TeamMember {
+//   id        String   @id @default(cuid())
+//   userId    String
+//   teamId    String
+//   role      TeamRole @default(MEMBER)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+//
+//   @@unique([userId, teamId])
+//   @@map("team_members")
+// }
+
+// Team roles enum (Phase 4で有効化)
+// enum TeamRole {
+//   OWNER
+//   ADMIN
+//   MEMBER
+// }
+
 // Categories table
 model Category {
   id          String   @id @default(cuid())
-  name        String   @unique @db.VarChar(50)
+  name        String   @db.VarChar(50)
   color       String   @db.VarChar(7) // hex color code
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  // User relation (Phase 2+)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Team relation (Phase 4で有効化)
+  // teamId      String?
+  // team        Team?    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
   // Relations
   tasks       Task[]
 
+  @@unique([userId, name]) // ユーザー内でカテゴリ名はユニーク
   @@map("categories")
 }
 
@@ -39,11 +167,22 @@ model Task {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
+  // User relation (Phase 2+)
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Team relations (Phase 4で有効化)
+  // teamId      String?
+  // team        Team?       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  // assigneeId  String?     // 担当者 (チームモード時)
+  // assignee    User?       @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+
   // Relations
   categoryId  String?
   category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   @@map("tasks")
+  @@index([userId])
   @@index([status])
   @@index([priority])
   @@index([dueDate])

@@ -12,8 +12,10 @@
     "commit-check": "commitlint --from HEAD~1 --to HEAD --verbose"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.10.0",
     "@prisma/client": "^6.13.0",
     "next": "15.4.3",
+    "next-auth": "^5.0.0-beta.29",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
