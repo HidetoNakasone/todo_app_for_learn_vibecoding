@@ -20,13 +20,10 @@
         "VOICEVOX_URL": "http://host.docker.internal:50023"
       }
     },
-    "postgresql": {
+    "prisma": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-postgres"],
-      "env": {
-        "DATABASE_URL": "postgresql://postgres:${DB_PASSWORD}@db:5432/todo_app"
-      }
+      "args": ["-y", "prisma", "mcp"]
     }
   }
 }

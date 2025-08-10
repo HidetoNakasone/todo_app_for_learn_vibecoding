@@ -66,21 +66,22 @@ echo "GROUP_ID=${CURRENT_GROUP_ID}" >> .env
 echo "✅ USER_ID/GROUP_IDを設定しました (USER_ID=${CURRENT_USER_ID}, GROUP_ID=${CURRENT_GROUP_ID})"
 echo "✅ NODE_ENVを開発環境用に設定しました"
 
+# TODO: DB接続情報は `.env` から取得するようなので、実はこの `.mcp.json.template` に分離する必要なさそう。なので、このロジック今は機能していない。しばらく様子見して問題なければ `.mcp.json` のみにして `.mcp.json.example` は削除するかも。
 # .mcp.json の生成 (.mcp.json.example から環境変数置換)
 if [ -f .mcp.json.example ]; then
   echo "🔧 .mcp.json を .mcp.json.example から生成しています..."
-  
+
   # .env から DB_PASSWORD を取得
   DB_PASSWORD=$(grep "^DB_PASSWORD=" .env | cut -d '=' -f2 | tr -d '"')
-  
+
   if [ -z "$DB_PASSWORD" ]; then
     echo "❌ DB_PASSWORD が .env ファイルに見つかりません"
     exit 1
   fi
-  
+
   # テンプレートファイルから .mcp.json を生成
   sed "s/\${DB_PASSWORD}/$DB_PASSWORD/g" .mcp.json.example > .mcp.json
-  
+
   echo "✅ .mcp.json を生成しました"
 else
   echo "ℹ️  .mcp.json.example が見つからないため、スキップしました"
@@ -152,7 +153,7 @@ echo ""
 while true; do
     read -p "VOICEVOX 音声システムを起動しますか？ (y/N): " yn
     case $yn in
-        [Yy]* | [Yy][Ee][Ss]* ) 
+        [Yy]* | [Yy][Ee][Ss]* )
             echo ""
             echo "🚀 VOICEVOX 音声システムを起動しています..."
             if nohup bash scripts/start-voicevox-system.sh > /dev/null 2>&1 &
@@ -174,7 +175,7 @@ while true; do
             fi
             break
             ;;
-        [Nn]* | [Nn][Oo]* | "" ) 
+        [Nn]* | [Nn][Oo]* | "" )
             echo ""
             echo "ℹ️  VOICEVOX 音声システムをスキップしました"
             echo ""
@@ -187,7 +188,7 @@ while true; do
             echo "💡 Tips: システム停止時は bash scripts/stop-voicevox-system.sh を実行してください"
             break
             ;;
-        * ) 
+        * )
             echo "y(yes) または n(no) で回答してください"
             ;;
     esac
