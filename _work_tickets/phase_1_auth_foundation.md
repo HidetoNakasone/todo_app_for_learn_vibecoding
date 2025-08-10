@@ -20,7 +20,7 @@
   - [x] 認証フロー動作確認
   - [x] ユーザー情報取得確認
   - [x] データベース連携確認
-- [x] Google OAuth 認証  
+- [x] Google OAuth 認証
   - [x] Google Cloud Console 設定
   - [x] 認証フロー動作確認
   - [x] ユーザー情報取得確認
@@ -30,7 +30,7 @@
 
 - [x] NextAuth.js v5 対応テーブル
   - [x] users テーブル
-  - [x] accounts テーブル  
+  - [x] accounts テーブル
   - [x] sessions テーブル
   - [x] verificationtokens テーブル
 - [x] Prisma マイグレーション適用済み
@@ -47,9 +47,9 @@
 
 ### セキュリティ強化
 
-- [ ] セッション設定の最適化確認
-  - [ ] session.maxAge 設定確認
-  - [ ] session.updateAge 設定確認
+- [x] セッション設定の最適化確認
+  - [x] session.maxAge 設定確認 (7日間に設定)
+  - [x] session.updateAge 設定確認 (4時間に設定)
 - [ ] CSRF 対策確認
 - [ ] セキュアヘッダー設定確認 (WANT)
 
@@ -85,7 +85,7 @@
 ## Phase 1 完了条件
 
 - [x] GitHub OAuth でログイン・ログアウトが正常動作する
-- [x] Google OAuth でログイン・ログアウトが正常動作する  
+- [x] Google OAuth でログイン・ログアウトが正常動作する
 - [x] ユーザー情報がデータベースに正しく保存される
 - [x] セッション管理が正常に機能する
 - [x] 認証が必要なページへのアクセス制御ができる

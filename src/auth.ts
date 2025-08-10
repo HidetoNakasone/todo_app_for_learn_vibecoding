@@ -33,5 +33,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   },
+  session: {
+    strategy: "database",
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+    updateAge: 4 * 60 * 60, // 4 hours
+  },
   debug: process.env.NODE_ENV === "development",
 });
