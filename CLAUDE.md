@@ -14,14 +14,23 @@ Next.js 15、TypeScript、PostgreSQL、Prisma ORM を使用したモダンな TO
 
 ## 開発コマンド
 
-### パッケージスクリプト
+### 基本開発コマンド
 
 ```bash
-npm run dev          # Turbopack使用の開発サーバー起動
-npm run build        # 本番用アプリケーションビルド
-npm run start        # 本番サーバー起動
-npm run lint         # ESLintによるコード品質チェック
+# 開発・ビルド・品質チェック
+bun run dev          # 開発サーバー起動（Turbopack使用）
+bun run build        # 本番用アプリケーションビルド
+bun run start        # 本番サーバー起動
+bun run lint         # ESLintによるコード品質チェック
+
+# Git操作
+bunx cz              # 対話式コミット（推奨）
+
+# データベース操作
+bun prisma studio    # データベースGUI（コンテナ内）
 ```
+
+**Note**: `npm` でも同様のコマンド実行可能ですが、このプロジェクトでは `bun` の使用を推奨
 
 ### 開発環境セットアップ
 

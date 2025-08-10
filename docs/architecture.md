@@ -1,4 +1,4 @@
-# TODOアプリ アーキテクチャ設計書
+# TODO アプリ アーキテクチャ設計書
 
 ## システム全体アーキテクチャ
 
@@ -12,16 +12,16 @@ graph TB
                 F3[TypeScript]
                 F4[Tailwind CSS]
             end
-            
+
             subgraph "Backend Layer"
                 B1[Next.js API Routes]
                 B2[Prisma ORM]
                 B3[Zod Validation]
             end
-            
+
             PORT1[Port: 3000]
         end
-        
+
         subgraph "Docker Container (PostgreSQL)"
             subgraph "Database"
                 DB1[PostgreSQL DB]
@@ -29,12 +29,12 @@ graph TB
                 DB3[Categories Table]
                 DB4[Indexes]
             end
-            
+
             VOL[Volume: /var/lib/postgresql]
             PORT2[Port: 5432]
         end
     end
-    
+
     USER[User Browser] --> F1
     F1 --> B1
     B1 --> B2
@@ -42,7 +42,7 @@ graph TB
     DB1 --> DB2
     DB1 --> DB3
     DB1 --> DB4
-    
+
     style F1 fill:#e1f5fe
     style B1 fill:#f3e5f5
     style DB1 fill:#e8f5e8
@@ -91,7 +91,7 @@ sequenceDiagram
     U->>F: 状態変更ボタンクリック
     F->>A: PUT /api/tasks/[id]
     Note over F,A: { status: "in_progress" }
-    
+
     A->>A: 状態遷移バリデーション
     alt 有効な状態遷移
         A->>P: task.update()
@@ -151,7 +151,7 @@ sequenceDiagram
     F->>A: API リクエスト
     A->>P: Prisma操作
     P->>D: データベースクエリ
-    
+
     alt データベースエラー
         D-->>P: 接続エラー
         P-->>A: PrismaClientError
@@ -173,22 +173,38 @@ sequenceDiagram
 ## フロントエンド アーキテクチャ
 
 ### ディレクトリ構造
+
+#### 基本構造 (Next.js 15 App Router + Best Practices)
+
 ```
 src/
-├── app/                    # Next.js App Router
+├── app/                       # Next.js App Router
 │   ├── globals.css
 │   ├── layout.tsx
 │   ├── page.tsx
+│   ├── loading.tsx            # グローバルローディング
+│   ├── error.tsx              # グローバルエラー
+│   ├── not-found.tsx          # グローバル404
 │   ├── tasks/
 │   │   ├── page.tsx
+│   │   ├── loading.tsx        # タスク一覧ローディング
+│   │   ├── error.tsx          # タスク一覧エラー
+│   │   ├── not-found.tsx      # タスク404
 │   │   ├── [id]/
-│   │   │   └── page.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── loading.tsx    # 詳細ページローディング
+│   │   │   └── error.tsx      # 詳細ページエラー
 │   │   └── new/
-│   │       └── page.tsx
+│   │       ├── page.tsx
+│   │       └── error.tsx      # 新規作成エラー
 │   ├── categories/
 │   │   ├── page.tsx
+│   │   ├── loading.tsx
+│   │   ├── error.tsx
 │   │   └── [id]/
-│   │       └── page.tsx
+│   │       ├── page.tsx
+│   │       ├── loading.tsx
+│   │       └── error.tsx
 │   ├── api/
 │   │   ├── tasks/
 │   │   │   ├── route.ts
@@ -198,19 +214,19 @@ src/
 │   │       ├── route.ts
 │   │       └── [id]/
 │   │           └── route.ts
-│   ├── _components/           # 再利用可能なコンポーネント
+│   ├── _components/           # 再利用可能なコンポーネント (プライベート)
 │   │   ├── ui/                # shadcn/ui コンポーネント
 │   │   ├── TaskCard.tsx
 │   │   ├── TaskForm.tsx
 │   │   ├── TaskList.tsx
 │   │   ├── CategoryBadge.tsx
 │   │   └── SearchBar.tsx
-│   ├── _lib/                  # ユーティリティ
+│   ├── _lib/                  # ユーティリティ (プライベート)
 │   │   ├── utils.ts
 │   │   ├── validations.ts     # Zod schemas
 │   │   ├── db.ts             # Prisma client
 │   │   └── types.ts          # TypeScript types
-├   └── _hooks/                # Custom hooks
+│   └── _hooks/               # Custom hooks (プライベート)
 │       ├── useTasks.ts
 │       ├── useCategories.ts
 │       └── useLocalStorage.ts
@@ -220,10 +236,42 @@ src/
     └── seed.ts
 ```
 
+#### オプション: ルートグループによる論理的整理
+
+将来の拡張を見据えた構造：
+
+```
+src/app/
+├── (dashboard)/              # メイン機能グループ (URLに影響なし)
+│   ├── layout.tsx           # ダッシュボード共通レイアウト
+│   ├── tasks/
+│   └── categories/
+├── (auth)/                  # 認証機能グループ (将来拡張)
+│   ├── layout.tsx           # 認証ページ共通レイアウト
+│   ├── login/
+│   └── signup/
+└── api/                     # API Routes (グループ化しない)
+```
+
+#### メタデータ最適化
+
+各ページファイルに SEO 対応の metadata を追加：
+
+```typescript
+// app/tasks/page.tsx
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "タスク一覧 | TODO App",
+  description: "あなたのタスクを効率的に管理",
+};
+```
+
 ### レイヤー構成
 
 #### 1. プレゼンテーション層 (Components)
-- **責務**: UIの表示とユーザーインタラクション
+
+- **責務**: UI の表示とユーザーインタラクション
 - **技術**: React, shadcn/ui, Tailwind CSS
 - **特徴**:
   - Server Components と Client Components の適切な使い分け
@@ -231,24 +279,26 @@ src/
   - レスポンシブデザイン
 
 #### 2. ビジネスロジック層 (Hooks & Utils)
+
 - **責務**: アプリケーションロジックとデータ変換
 - **技術**: Custom Hooks, TypeScript
 - **特徴**:
   - 状態管理
-  - API呼び出し
+  - API 呼び出し
   - データバリデーション
 
 #### 3. データアクセス層 (API Routes)
+
 - **責務**: データベースとの通信
 - **技術**: Next.js API Routes, Prisma ORM
 - **特徴**:
-  - RESTful API設計
+  - RESTful API 設計
   - エラーハンドリング
   - レスポンス型定義
 
 ## バックエンド アーキテクチャ
 
-### API設計
+### API 設計
 
 #### エンドポイント一覧
 
@@ -291,24 +341,28 @@ interface ApiError {
 ## セキュリティ設計
 
 ### 入力値検証
+
 - **Zod スキーマ**: フロントエンド・バックエンド共通のバリデーション
-- **サニタイゼーション**: XSS攻撃の防止
+- **サニタイゼーション**: XSS 攻撃の防止
 - **型安全性**: TypeScript による静的型チェック
 
 ### データベースセキュリティ
-- **Prisma ORM**: SQLインジェクション攻撃の防止
+
+- **Prisma ORM**: SQL インジェクション攻撃の防止
 - **パラメータ化クエリ**: 安全なデータベースアクセス
-- **接続暗号化**: SSL/TLS接続の使用
+- **接続暗号化**: SSL/TLS 接続の使用
 
 ## パフォーマンス最適化
 
 ### フロントエンド最適化
+
 - **Server Components**: サーバーサイドレンダリングの活用
 - **動的インポート**: コード分割による初期読み込み時間の短縮
 - **画像最適化**: Next.js Image コンポーネントの使用
 - **キャッシュ戦略**: SWR または React Query の使用
 
 ### バックエンド最適化
+
 - **データベースインデックス**: クエリパフォーマンスの向上
 - **接続プール**: データベース接続の効率化
 - **レスポンスキャッシュ**: 頻繁にアクセスされるデータのキャッシュ
@@ -316,15 +370,18 @@ interface ApiError {
 ## 運用・監視
 
 ### ロギング
+
 - **アプリケーションログ**: エラーとアクセスログ
 - **データベースログ**: クエリパフォーマンスの監視
 - **コンテナログ**: Docker コンテナの状態監視
 
 ### ヘルスチェック
+
 - **アプリケーション**: `/api/health` エンドポイント
 - **データベース**: 接続確認とレスポンス時間測定
 - **コンテナ**: Docker Compose health check
 
 ### バージョン管理, 設定ファイルの管理方法
+
 - **アプリケーションコード**: Git リポジトリでの管理
-- **設定ファイル**: 環境変数とDockerfile の管理
+- **設定ファイル**: 環境変数と Dockerfile の管理
