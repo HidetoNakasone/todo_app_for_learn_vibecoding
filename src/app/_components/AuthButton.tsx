@@ -1,4 +1,4 @@
-import { signIn, signOut, auth } from "@/auth"
+import { auth, signIn, signOut } from "@/auth"
 
 export default async function AuthButton() {
   const session = await auth()
@@ -13,9 +13,11 @@ export default async function AuthButton() {
         className="inline"
       >
         <div className="flex items-center gap-4">
-          <p className="text-sm text-gray-600">
-            Signed in as <span className="font-medium">{session.user.email}</span>
-          </p>
+          {(session.user.name || session.user.email) && (
+            <p className="text-sm text-gray-600">
+              Signed in as <span className="font-medium">{session.user.name || session.user.email}</span>
+            </p>
+          )}
           <button
             type="submit"
             className="px-4 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition-colors"
