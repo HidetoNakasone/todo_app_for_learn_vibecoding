@@ -43,12 +43,14 @@ choco install mkcert
 ### 2. ローカル認証局（CA）セットアップ
 
 #### 基本セットアップ
+
 ```bash
 # ローカルCAを作成してシステムに追加
 mkcert -install
 ```
 
 #### macOSでのFirefox対応
+
 ```bash
 # Firefox用のnssツールインストール
 brew install nss
@@ -74,6 +76,7 @@ The local CA is now installed in the Firefox trust store (requires browser resta
 ```
 
 #### ブラウザ別対応状況
+
 - ✅ **Chrome/Safari**: 基本の `mkcert -install` で即座に対応
 - ✅ **Firefox**: `brew install nss` 後に `mkcert -install` で対応（ブラウザ再起動必要）
 

@@ -22,7 +22,7 @@
   - [ ] 基本フィールド
     - [ ] id: String @id @default(cuid())
     - [ ] teamId: String
-    - [ ] userId: String  
+    - [ ] userId: String
     - [ ] role: TeamRole @default(MEMBER)
     - [ ] joinedAt: DateTime @default(now())
   - [ ] 複合ユニークキー
@@ -181,46 +181,46 @@
 
 ### チーム管理コンポーネント
 
-- [ ] TeamCard コンポーネント (src/app/_components/TeamCard.tsx)
+- [ ] TeamCard コンポーネント (`src/app/_components/TeamCard.tsx`)
   - [ ] チーム情報表示 (名前、説明、メンバー数)
   - [ ] ロール表示
   - [ ] 管理ボタン (設定、脱退等)
 
-- [ ] TeamForm コンポーネント (src/app/_components/TeamForm.tsx)
+- [ ] TeamForm コンポーネント (`src/app/_components/TeamForm.tsx`)
   - [ ] チーム作成・編集フォーム
   - [ ] バリデーション実装
   - [ ] チーム数制限チェック
 
-- [ ] TeamMemberList コンポーネント (src/app/_components/TeamMemberList.tsx)
+- [ ] TeamMemberList コンポーネント (`src/app/_components/TeamMemberList.tsx`)
   - [ ] メンバー一覧表示
   - [ ] ロール表示・変更
   - [ ] 削除・招待機能
 
-- [ ] MemberInviteModal コンポーネント (src/app/_components/MemberInviteModal.tsx)
+- [ ] MemberInviteModal コンポーネント (`src/app/_components/MemberInviteModal.tsx`)
   - [ ] メンバー招待フォーム
   - [ ] 招待リンク生成・表示
   - [ ] ロール選択
 
 ### チーム関連ページ実装
 
-- [ ] Teams 一覧ページ (src/app/teams/page.tsx)
+- [ ] Teams 一覧ページ (`src/app/teams/page.tsx`)
   - [ ] 参加チーム一覧表示
   - [ ] チーム作成ボタン
   - [ ] チーム切り替え機能
 
-- [ ] Team 詳細ページ (src/app/teams/[id]/page.tsx)
+- [ ] Team 詳細ページ (`src/app/teams/[id]/page.tsx`)
   - [ ] チーム情報表示
   - [ ] メンバー一覧
   - [ ] チームタスク概要
   - [ ] 管理機能 (権限に応じて)
 
-- [ ] Team 設定ページ (src/app/teams/[id]/settings/page.tsx)
+- [ ] Team 設定ページ (`src/app/teams/[id]/settings/page.tsx`)
   - [ ] チーム情報編集
   - [ ] メンバー管理
   - [ ] 権限設定
   - [ ] チーム削除
 
-- [ ] 招待受諾ページ (src/app/invitations/[token]/page.tsx)
+- [ ] 招待受諾ページ (`src/app/invitations/[token]/page.tsx`)
   - [ ] 招待情報表示
   - [ ] 承認・拒否機能
   - [ ] ログイン促進
@@ -229,12 +229,12 @@
 
 ### コンテキスト切り替え
 
-- [ ] TeamContextProvider (src/app/_contexts/TeamContext.tsx)
+- [ ] TeamContextProvider (`src/app/_contexts/TeamContext.tsx`)
   - [ ] 現在のチームコンテキスト管理
   - [ ] 個人モード ↔ チームモード切り替え
   - [ ] チーム切り替え機能
 
-- [ ] ContextSwitcher コンポーネント (src/app/_components/ContextSwitcher.tsx)
+- [ ] ContextSwitcher コンポーネント (`src/app/_components/ContextSwitcher.tsx`)
   - [ ] 個人/チーム切り替えUI
   - [ ] 現在のコンテキスト表示
   - [ ] チーム選択ドロップダウン
@@ -277,7 +277,7 @@
 
 ### 権限チェック実装
 
-- [ ] チーム権限ヘルパー関数 (src/app/_lib/team-auth.ts)
+- [ ] チーム権限ヘルパー関数 (`src/app/_lib/team-auth.ts`)
   - [ ] checkTeamMembership(userId, teamId)
   - [ ] checkTeamRole(userId, teamId, minRole)
   - [ ] requireTeamMembership(userId, teamId)
@@ -299,7 +299,7 @@
 
 ### タスクコメント機能
 
-- [ ] TaskComment モデル追加 (schema.prisma)
+- [ ] TaskComment モデル追加 (`schema.prisma`)
   - [ ] 基本フィールド
     - [ ] id: String @id @default(cuid())
     - [ ] content: String (必須, 最大1000文字)
@@ -308,7 +308,7 @@
     - [ ] createdAt: DateTime @default(now())
     - [ ] updatedAt: DateTime @updatedAt
 
-- [ ] Comments API実装 (src/app/api/tasks/[id]/comments/)
+- [ ] Comments API実装 (`src/app/api/tasks/[id]/comments/`)
   - [ ] GET - コメント一覧取得
   - [ ] POST - コメント作成
   - [ ] PUT - コメント編集 (作成者のみ)
@@ -350,7 +350,7 @@
 
 ### チーム統計・レポート
 
-- [ ] チーム統計API (src/app/api/teams/[id]/stats)
+- [ ] チーム統計API (`src/app/api/teams/[id]/stats`)
   - [ ] タスク完了率
   - [ ] メンバー別活動状況
   - [ ] カテゴリ別統計

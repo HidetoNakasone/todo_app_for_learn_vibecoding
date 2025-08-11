@@ -39,12 +39,12 @@
 
 ### バリデーション・型定義
 
-- [ ] Category関連型定義 (src/app/_lib/types.ts)
+- [ ] Category関連型定義 (`src/app/_lib/types.ts`)
   - [ ] Category interface
   - [ ] CategoryCreateInput interface
   - [ ] CategoryUpdateInput interface
 
-- [ ] Category バリデーション (src/app/_lib/validations.ts)
+- [ ] Category バリデーション (`src/app/_lib/validations.ts`)
   - [ ] categoryCreateSchema
     - [ ] name: z.string().min(1).max(50)
     - [ ] color: z.string().regex(/^#[0-9A-Fa-f]{6}$/)
@@ -59,7 +59,7 @@
 - [ ] GET /api/categories (カテゴリ一覧)
   - [ ] 認証チェック実装
   - [ ] ユーザー別カテゴリ取得
-  - [ ] タスク数集計 (_count.tasks)
+  - [ ] タスク数集計 (`_count.tasks`)
   - [ ] 作成日順ソート
 
 - [ ] POST /api/categories (カテゴリ作成)
@@ -81,23 +81,23 @@
 
 ### カテゴリUI実装
 
-- [ ] CategoryBadge コンポーネント (src/app/_components/CategoryBadge.tsx)
+- [ ] CategoryBadge コンポーネント (`src/app/_components/CategoryBadge.tsx`)
   - [ ] カテゴリ名・色表示
   - [ ] サイズバリエーション (small, medium, large)
   - [ ] クリック可能オプション (フィルター用)
 
-- [ ] CategoryForm コンポーネント (src/app/_components/CategoryForm.tsx)
+- [ ] CategoryForm コンポーネント (`src/app/_components/CategoryForm.tsx`)
   - [ ] 新規作成・編集フォーム
   - [ ] 色選択UI (カラーピッカーまたはプリセット)
   - [ ] リアルタイムプレビュー
 
-- [ ] CategoryList コンポーネント (src/app/_components/CategoryList.tsx)
+- [ ] CategoryList コンポーネント (`src/app/_components/CategoryList.tsx`)
   - [ ] カテゴリ一覧表示
   - [ ] 編集・削除ボタン
   - [ ] 関連タスク数表示
   - [ ] 削除確認ダイアログ
 
-- [ ] Categories 管理ページ (src/app/categories/page.tsx)
+- [ ] Categories 管理ページ (`src/app/categories/page.tsx`)
   - [ ] CategoryList コンポーネント使用
   - [ ] 新規作成ボタン・フォーム
   - [ ] モーダル or 別ページでの編集
@@ -117,7 +117,7 @@
 
 ### カスタムフック拡張
 
-- [ ] Categories用フック (src/app/_hooks/)
+- [ ] Categories用フック (`src/app/_hooks/`)
   - [ ] useCategories() - カテゴリ一覧
   - [ ] useCreateCategory() - カテゴリ作成
   - [ ] useUpdateCategory(id) - カテゴリ更新
@@ -136,14 +136,14 @@
 
 ### 検索UI実装
 
-- [ ] SearchBar コンポーネント (src/app/_components/SearchBar.tsx)
+- [ ] SearchBar コンポーネント (`src/app/_components/SearchBar.tsx`)
   - [ ] 検索入力フィールド
   - [ ] リアルタイム検索 (debounce処理)
   - [ ] searchParams との連携 (URL同期)
   - [ ] 検索履歴機能 (localStorage) (WANT)
   - [ ] 検索クリアボタン
 
-- [ ] SearchResults コンポーネント (src/app/_components/SearchResults.tsx)
+- [ ] SearchResults コンポーネント (`src/app/_components/SearchResults.tsx`)
   - [ ] 検索結果表示
   - [ ] ヒット件数表示
   - [ ] 検索キーワードハイライト
@@ -173,18 +173,18 @@
 
 ### エクスポート機能
 
-- [ ] Export API実装 (src/app/api/tasks/export/route.ts)
+- [ ] Export API実装 (`src/app/api/tasks/export/route.ts`)
   - [ ] JSON エクスポート
     - [ ] ユーザーのタスク・カテゴリ一括取得
     - [ ] メタデータ付加 (exportDate, version等)
     - [ ] ファイル形式: .json
-  - [ ] CSV エクスポート  
+  - [ ] CSV エクスポート
     - [ ] タスクデータのCSV変換
     - [ ] カテゴリ名の展開
     - [ ] 日付フォーマット統一
     - [ ] ファイル形式: .csv
 
-- [ ] ExportModal コンポーネント (src/app/_components/ExportModal.tsx)
+- [ ] ExportModal コンポーネント (`src/app/_components/ExportModal.tsx`)
   - [ ] エクスポート形式選択 (JSON/CSV)
   - [ ] フィルター条件指定 (全て/完了済み/未完了等)
   - [ ] ダウンロード実行
@@ -192,14 +192,14 @@
 
 ### インポート機能
 
-- [ ] Import API実装 (src/app/api/tasks/import/route.ts)
+- [ ] Import API実装 (`src/app/api/tasks/import/route.ts`)
   - [ ] ファイル形式検証 (JSON/CSV)
   - [ ] データバリデーション
   - [ ] 重複データ処理 (skip/overwrite)
   - [ ] カテゴリの自動作成・マッピング
   - [ ] インポート結果レポート
 
-- [ ] ImportModal コンポーネント (src/app/_components/ImportModal.tsx)
+- [ ] ImportModal コンポーネント (`src/app/_components/ImportModal.tsx`)
   - [ ] ファイルアップロード (drag & drop対応)
   - [ ] プレビュー機能 (インポート前確認)
   - [ ] 重複処理オプション
@@ -207,7 +207,7 @@
 
 ### データ管理ページ
 
-- [ ] Data Management ページ (src/app/data/page.tsx)
+- [ ] Data Management ページ (`src/app/data/page.tsx`)
   - [ ] エクスポート・インポート機能統合
   - [ ] データ統計表示 (総タスク数、カテゴリ数等)
   - [ ] データクリア機能 (確認付き)
@@ -228,7 +228,7 @@
 
 ### プロバイダー管理UI
 
-- [ ] Account Settings ページ (src/app/account/page.tsx)
+- [ ] Account Settings ページ (`src/app/account/page.tsx`)
   - [ ] 連携済みプロバイダー表示
   - [ ] アカウント連携・解除機能
   - [ ] プロフィール情報管理
@@ -239,7 +239,7 @@
 
 - [ ] インデックス追加確認
   - [ ] tasks.userId インデックス
-  - [ ] tasks.categoryId インデックス  
+  - [ ] tasks.categoryId インデックス
   - [ ] tasks.status インデックス
   - [ ] tasks.dueDate インデックス
   - [ ] categories.userId インデックス

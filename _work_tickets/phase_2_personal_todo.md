@@ -21,7 +21,7 @@
 
 - [ ] TaskStatus enum 定義
   - [ ] TODO
-  - [ ] IN_PROGRESS  
+  - [ ] IN_PROGRESS
   - [ ] COMPLETED
 
 - [ ] TaskPriority enum 定義
@@ -30,12 +30,12 @@
   - [ ] LOW
 
 - [ ] User モデルに Task リレーション追加
-  - [ ] tasks: Task[] 
+  - [ ] tasks: Task[]
 
 ### データベースマイグレーション
 
 - [ ] マイグレーション実行
-  - [ ] `bun prisma migrate dev --name "add-task-model"` 
+  - [ ] `bun prisma migrate dev --name "add-task-model"`
   - [ ] マイグレーションファイル確認
   - [ ] PostgreSQL MCP でテーブル構造確認
 
@@ -59,21 +59,21 @@
 
 ### TypeScript 型定義
 
-- [ ] Task関連型定義 (src/app/_lib/types.ts)
+- [ ] Task関連型定義 (`src/app/_lib/types.ts`)
   - [ ] TaskStatus、TaskPriority type
   - [ ] Task interface (Prisma型ベース)
-  - [ ] TaskCreateInput interface  
+  - [ ] TaskCreateInput interface
   - [ ] TaskUpdateInput interface
   - [ ] TaskFilters interface
 
 ### Zod バリデーションスキーマ
 
-- [ ] Task バリデーション (src/app/_lib/validations.ts)
+- [ ] Task バリデーション (`src/app/_lib/validations.ts`)
   - [ ] taskCreateSchema
     - [ ] name: z.string().min(1).max(100)
     - [ ] description: z.string().max(500).optional()
     - [ ] priority: z.enum(["HIGH", "MEDIUM", "LOW"])
-    - [ ] status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED"])  
+    - [ ] status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED"])
     - [ ] dueDate: z.date().optional()
   - [ ] taskUpdateSchema (partial)
   - [ ] taskQuerySchema (フィルター用)
@@ -120,18 +120,18 @@
 
 ### API 共通機能
 
-- [ ] 認証ヘルパー関数 (src/app/_lib/auth.ts)
+- [ ] 認証ヘルパー関数 (`src/app/_lib/auth.ts`)
   - [ ] getCurrentUser(): Promise<User | null>
   - [ ] requireAuth(): Promise<User> (認証必須)
 
-- [ ] エラーレスポンスヘルパー (src/app/_lib/api-utils.ts)
+- [ ] エラーレスポンスヘルパー (`src/app/_lib/api-utils.ts`)
   - [ ] createErrorResponse(message, status)
   - [ ] handlePrismaError(error)
   - [ ] handleValidationError(zodError)
 
 ### Server Actions 実装 (推奨)
 
-- [ ] Task操作 Server Actions (src/app/_lib/actions/task-actions.ts)
+- [ ] Task操作 Server Actions (`src/app/_lib/actions/task-actions.ts`)
   - [ ] createTaskAction(formData: FormData)
   - [ ] updateTaskAction(id: string, formData: FormData)
   - [ ] deleteTaskAction(id: string)
@@ -147,14 +147,14 @@
 
 ### 基本UI コンポーネント
 
-- [ ] TaskCard コンポーネント (src/app/_components/TaskCard.tsx)
+- [ ] TaskCard コンポーネント (`src/app/_components/TaskCard.tsx`)
   - [ ] タスク情報表示 (name, description, status, priority, dueDate)
   - [ ] ステータスバッジ表示
   - [ ] 優先度カラー表示
   - [ ] 編集・削除ボタン
   - [ ] ステータス変更機能
 
-- [ ] TaskForm コンポーネント (src/app/_components/TaskForm.tsx)
+- [ ] TaskForm コンポーネント (`src/app/_components/TaskForm.tsx`)
   - [ ] 新規作成用フォーム
   - [ ] 編集用フォーム (プリフィル機能)
   - [ ] フィールドバリデーション (Zod + react-hook-form)
@@ -163,7 +163,7 @@
   - [ ] `useFormStatus` フックでのローディング状態表示 (WANT)
   - [ ] 楽観的更新 `useOptimistic` 実装 (WANT)
 
-- [ ] TaskList コンポーネント (src/app/_components/TaskList.tsx)
+- [ ] TaskList コンポーネント (`src/app/_components/TaskList.tsx`)
   - [ ] タスク一覧表示
   - [ ] ソート機能 (ドロップダウン)
   - [ ] フィルタリング機能 (status, priority)
@@ -172,7 +172,7 @@
 
 ### ページ実装
 
-- [ ] Tasks 一覧ページ (src/app/tasks/page.tsx)
+- [ ] Tasks 一覧ページ (`src/app/tasks/page.tsx`)
   - [ ] Server Component でのデータ取得（Prisma直接呼び出し）
   - [ ] `searchParams` での フィルター・ソート対応
   - [ ] TaskList コンポーネント使用
@@ -181,33 +181,33 @@
   - [ ] ページネーション（将来拡張用）
 
 - [ ] Tasks ローディング・エラー UI
-  - [ ] src/app/tasks/loading.tsx (Skeleton UI)
-  - [ ] src/app/tasks/error.tsx (Error Boundary)
+  - [ ] `src/app/tasks/loading.tsx` (Skeleton UI)
+  - [ ] `src/app/tasks/error.tsx` (Error Boundary)
   - [ ] Suspense境界での段階的表示 (WANT)
 
-- [ ] Task 新規作成ページ (src/app/tasks/new/page.tsx)
+- [ ] Task 新規作成ページ (`src/app/tasks/new/page.tsx`)
   - [ ] TaskForm コンポーネント使用
   - [ ] 作成成功時のリダイレクト
   - [ ] キャンセル機能
 
-- [ ] Task 編集ページ (src/app/tasks/[id]/edit/page.tsx)
+- [ ] Task 編集ページ (`src/app/tasks/[id]/edit/page.tsx`)
   - [ ] 既存タスクデータ取得
   - [ ] TaskForm コンポーネント使用 (編集モード)
   - [ ] 更新成功時の処理
   - [ ] 404エラー処理
 
-- [ ] Task 詳細ページ (src/app/tasks/[id]/page.tsx)
+- [ ] Task 詳細ページ (`src/app/tasks/[id]/page.tsx`)
   - [ ] タスク詳細表示
   - [ ] 編集・削除リンク
   - [ ] ステータス変更機能
 
 ### フロントエンド状態管理・API連携
 
-- [ ] カスタムフック実装 (src/app/_hooks/)
+- [ ] カスタムフック実装 (`src/app/_hooks/`)
   - [ ] useTasks() - タスク一覧取得・更新
   - [ ] useTask(id) - 特定タスク取得
   - [ ] useCreateTask() - タスク作成
-  - [ ] useUpdateTask(id) - タスク更新  
+  - [ ] useUpdateTask(id) - タスク更新
   - [ ] useDeleteTask(id) - タスク削除
 
 ## 2.5 フィルタリング・ソート機能
@@ -216,14 +216,14 @@
 
 - [ ] GET /api/tasks クエリパラメーター拡張
   - [ ] ?status=TODO|IN_PROGRESS|COMPLETED
-  - [ ] ?priority=HIGH|MEDIUM|LOW  
+  - [ ] ?priority=HIGH|MEDIUM|LOW
   - [ ] ?sortBy=createdAt|dueDate|priority|name
   - [ ] ?sortOrder=asc|desc
   - [ ] 複数条件の組み合わせ対応
 
 ### フロントエンド UI
 
-- [ ] FilterBar コンポーネント (src/app/_components/FilterBar.tsx)
+- [ ] FilterBar コンポーネント (`src/app/_components/FilterBar.tsx`)
   - [ ] ステータスフィルター (ラジオボタン/タブ)
   - [ ] 優先度フィルター (チェックボックス)
   - [ ] ソート選択 (ドロップダウン)
@@ -248,7 +248,7 @@
 
 - [ ] コンポーネント単体テスト
   - [ ] TaskCard 表示・操作テスト
-  - [ ] TaskForm バリデーション・送信テスト  
+  - [ ] TaskForm バリデーション・送信テスト
   - [ ] TaskList フィルター・ソートテスト
 
 ### 統合テスト
@@ -263,14 +263,14 @@
 ### 機能動作確認
 
 - [ ] タスクCRUD操作が正常動作する
-- [ ] ユーザー別データ分離ができている  
+- [ ] ユーザー別データ分離ができている
 - [ ] フィルタリング・ソート機能が動作する
 - [ ] エラーハンドリングが適切に機能する
 
 ### コード品質確認
 
 - [ ] ESLint エラーなし (`bun run lint`)
-- [ ] TypeScript エラーなし (`bunx tsc --noEmit`)  
+- [ ] TypeScript エラーなし (`bunx tsc --noEmit`)
 - [ ] Prettier 整形済み (`bun prettier --check .`)
 
 ### 性能・UX確認
