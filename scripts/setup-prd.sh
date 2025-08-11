@@ -42,6 +42,43 @@ sed_inplace '/^$/N;/^\n$/d' .env
 # NODE_ENVを本番環境用に確認・設定
 sed_inplace 's/NODE_ENV="development"/NODE_ENV="production"/' .env
 
+# 本番環境用NextAuth.js設定
+echo "🔐 NextAuth.js認証設定を本番環境用に構成しています..."
+
+# AUTH_DEBUG を削除または無効化（本番環境では不要）
+sed_inplace '/^AUTH_DEBUG=/d' .env
+
+# AUTH_SECRET を自動生成（まだ設定されていない場合）
+if grep -q "your-auth-secret-here-please-change-this-to-random-string" .env; then
+  echo "🔑 AUTH_SECRET を自動生成しています..."
+  
+  # 32文字のランダムシークレット生成
+  AUTH_SECRET=$(openssl rand -hex 32)
+  
+  # AUTH_SECRET を置換
+  sed_inplace "s/your-auth-secret-here-please-change-this-to-random-string/$AUTH_SECRET/" .env
+  
+  echo "✅ AUTH_SECRET を自動生成・設定しました"
+else
+  echo "ℹ️  AUTH_SECRET は既に設定されています"
+fi
+
+# NEXTAUTH_URL を本番環境用に設定（必要に応じて変更）
+if grep -q "localhost:3000" .env; then
+  echo "⚠️  NEXTAUTH_URL が開発環境設定になっています"
+  echo "   本番環境では適切なドメインに手動で変更してください"
+  echo "   例: NEXTAUTH_URL=\"https://your-domain.com\""
+fi
+
+# OAuth設定の確認
+if grep -q "your-github-oauth-app-client-id" .env || grep -q "your-google-oauth-client-id" .env; then
+  echo "⚠️  OAuth設定にプレースホルダーが残っています"
+  echo "   本番環境では以下の設定を手動で行ってください："
+  echo "   1. GitHub OAuth App: https://github.com/settings/developers"
+  echo "   2. Google OAuth App: https://console.cloud.google.com/apis/credentials"
+  echo "   3. 各プロバイダーの CLIENT_ID と CLIENT_SECRET を設定"
+fi
+
 # DB_PASSWORDを自動生成
 if grep -q "your_secure_password_here" .env; then
   echo "🔐 安全なデータベースパスワードを自動生成しています..."
