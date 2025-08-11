@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:https": "next dev --turbopack --experimental-https --experimental-https-key ./docker/app/certs/hep-local.key --experimental-https-cert ./docker/app/certs/hep-local.crt",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

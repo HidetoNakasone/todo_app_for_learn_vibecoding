@@ -143,6 +143,133 @@ docker compose -f compose.yaml exec app bash -ic 'curl -LsSf https://astral.sh/u
 
 echo "✅ 開発環境のセットアップが完了しました！"
 echo ""
+
+# HTTPS証明書セットアップ（オプション）
+echo "🔒 HTTPS開発環境のセットアップ"
+echo "----------------------------------------"
+echo "HTTPS開発環境をセットアップしますか？"
+echo "（セキュリティヘッダーやSecure Cookie等のテストが可能になります）"
+echo ""
+
+while true; do
+    read -p "HTTPS証明書を作成しますか？ (y/N): " yn
+    case $yn in
+        [Yy]* | [Yy][Ee][Ss]* )
+            echo ""
+            echo "🚀 HTTPS証明書のセットアップを開始しています..."
+            
+            # mkcert存在確認
+            if ! command -v mkcert &> /dev/null; then
+                echo "📥 mkcert をインストールしています..."
+                if [[ "$OSTYPE" == "darwin"* ]]; then
+                    # macOS
+                    if command -v brew &> /dev/null; then
+                        brew install mkcert
+                        # Firefox対応のためnssも追加
+                        brew install nss
+                    else
+                        echo "❌ Homebrew が見つかりません。手動でmkcertをインストールしてください"
+                        echo "   参考: https://github.com/FiloSottile/mkcert#installation"
+                        break
+                    fi
+                elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+                    # Linux
+                    echo "⚠️  Linuxでは手動でmkcertをインストールしてください"
+                    echo "   Ubuntu/Debian: sudo apt install libnss3-tools"
+                    echo "   その後: https://github.com/FiloSottile/mkcert#installation の手順を実行"
+                    break
+                else
+                    echo "❌ サポートされていないOSです: $OSTYPE"
+                    break
+                fi
+            else
+                echo "✅ mkcert は既にインストール済みです"
+            fi
+            
+            # ローカルCA初期化
+            echo "🔧 ローカル認証局を初期化しています..."
+            mkcert -install
+            
+            # 証明書ディレクトリ作成
+            mkdir -p docker/app/certs
+            cd docker/app/certs
+            
+            # 証明書作成
+            echo "🔑 HTTPS証明書を作成しています..."
+            mkcert hep.local localhost 127.0.0.1 ::1
+            
+            # ファイル名変更
+            if [ -f hep.local+3.pem ]; then
+                mv hep.local+3.pem hep-local.crt
+                mv hep.local+3-key.pem hep-local.key
+            fi
+            
+            # 適切な権限設定
+            chmod 600 hep-local.key
+            chmod 644 hep-local.crt
+            
+            cd ../../..
+            
+            # hosts設定
+            echo "🌐 hosts設定を確認しています..."
+            if ! grep -q "127.0.0.1 hep.local" /etc/hosts; then
+                echo "📝 /etc/hosts に hep.local を追加しています..."
+                echo "127.0.0.1 hep.local" | sudo tee -a /etc/hosts
+                echo "✅ hosts設定を追加しました"
+            else
+                echo "ℹ️  hosts設定は既に存在しています"
+            fi
+            
+            # NEXTAUTH_URLのHTTPS化確認
+            while true; do
+                read -p "NEXTAUTH_URLをHTTPS用に設定しますか？ (y/N): " https_yn
+                case $https_yn in
+                    [Yy]* | [Yy][Ee][Ss]* )
+                        sed_inplace 's|NEXTAUTH_URL="http://localhost:3000"|NEXTAUTH_URL="https://hep.local:3000"|' .env
+                        echo "✅ NEXTAUTH_URLをHTTPS用に設定しました"
+                        break
+                        ;;
+                    [Nn]* | [Nn][Oo]* | "" )
+                        echo "ℹ️  NEXTAUTH_URLはHTTP設定のままです"
+                        break
+                        ;;
+                    * )
+                        echo "y(yes) または n(no) で回答してください"
+                        ;;
+                esac
+            done
+            
+            echo ""
+            echo "✅ HTTPS証明書のセットアップが完了しました！"
+            echo ""
+            echo "🔗 HTTPS開発サーバー起動方法:"
+            echo "  bun run dev:https"
+            echo ""
+            echo "🌐 アクセスURL:"
+            echo "  https://hep.local:3000"
+            echo "  https://localhost:3000"
+            echo ""
+            echo "💡 Tips:"
+            echo "  - HTTP/HTTPS両方のスクリプトが package.json に設定済みです"
+            echo "  - 証明書は自動で信頼されるため、ブラウザ警告は表示されません"
+            echo ""
+            break
+            ;;
+        [Nn]* | [Nn][Oo]* | "" )
+            echo ""
+            echo "ℹ️  HTTPS証明書のセットアップをスキップしました"
+            echo ""
+            echo "後でセットアップする場合："
+            echo "  詳細は docs/tech_note/local-https-development-mkcert-2025-08-11.md を参照"
+            echo ""
+            break
+            ;;
+        * )
+            echo "y(yes) または n(no) で回答してください"
+            ;;
+    esac
+done
+
 echo "🎵 VOICEVOX 音声システムの起動"
 echo "----------------------------------------"
 echo "VOICEVOX 音声システムを起動しますか？"
