@@ -36,9 +36,15 @@ const nextConfig: NextConfig = {
               "default-src 'self'", // 基本: 自分のドメインからのリソースのみ許可
               "script-src 'self'" +
                 (process.env.NODE_ENV === "development"
-                  ? " 'unsafe-eval'"
-                  : ""), // JS: 自分のドメイン + 開発環境ではeval許可(ホットリロードで利用)
-              "style-src 'self' 'unsafe-inline'", // CSS: 自分のドメイン + インライン許可 (style属性に攻撃を仕込まれる可能性はあるが、SPAではstyle属性使うこと多いので妥協)
+                  ? " 'unsafe-eval' 'unsafe-inline'"
+                  : ""), // JS: 自分のドメイン + 開発環境ではeval許可(ホットリロードとインラインで利用)
+              "style-src 'self'" +
+                (process.env.NODE_ENV === "development"
+                  ? " 'unsafe-inline'"
+                  : ""), // CSS: 自分のドメイン + 開発環境ではインライン許可
+              // (style属性に攻撃を仕込まれる可能性はあるが、SPAではstyle属性使うこと多いので開発時は妥協)
+              // 本番では厳格に制限。ただしstyled-jsx等を使う場合は'unsafe-inline'またはnonce-based CSPが必要
+              // TODO: 本番環境でスタイル問題が発生した場合はnonce-based CSPまたは'unsafe-inline'復活を検討
               "img-src 'self' data: https:", // 画像: 3つ許可。自分のドメイン, data(Base64 Encode Image), HTTPS(外部HTTPS画像)。反対にHTTPは禁止
               "font-src 'self' data:", // フォント: 自分のドメイン + data URL
               "connect-src 'self'", // AJAX/fetch: 自分のドメインへの通信のみ
@@ -66,9 +72,9 @@ const nextConfig: NextConfig = {
               "accelerometer=()", // 加速度センサー禁止
               "bluetooth=()", // Bluetooth禁止
               "midi=()", // MIDI機器アクセス禁止
-              "notifications=()", // プッシュ通知禁止
-              "push=()", // プッシュメッセージ禁止
-              "speaker-selection=()", // スピーカー選択禁止
+              // "notifications=()", // プッシュ通知禁止（ブラウザ未対応のため一時的にコメントアウト）
+              // "push=()", // プッシュメッセージ禁止（ブラウザ未対応のため一時的にコメントアウト）
+              // "speaker-selection=()", // スピーカー選択禁止（ブラウザ未対応のため一時的にコメントアウト）
               "sync-xhr=()", // 同期XMLHttpRequest禁止
               "fullscreen=(self)", // フルスクリーン: 自分のドメインのみ許可
               "web-share=(self)", // Web Share API: 自分のドメインのみ許可
