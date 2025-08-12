@@ -25,6 +25,10 @@
 - **認証**: NextAuth.js v5
 - **状態管理**: TanStack Query (Server State) + Zustand (Client State)
 
+#### WANT（任意）
+
+- **Storybook**: UIコンポーネントのカタログ・開発効率化・アクセシビリティ自動チェック用
+
 ### バックエンド
 
 - **API**: Next.js API Routes

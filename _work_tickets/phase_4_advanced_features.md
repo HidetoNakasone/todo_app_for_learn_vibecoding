@@ -1,6 +1,6 @@
-# Phase 3: 高度機能 (Week 5)
+# Phase 4: 高度機能 (Week 5)
 
-## 3.1 カテゴリ管理機能
+## 4.1 カテゴリ管理機能
 
 ### データベース拡張
 
@@ -115,13 +115,20 @@
   - [ ] カテゴリ別フィルター追加
   - [ ] カテゴリ未設定タスクフィルター
 
-### カスタムフック拡張
+### モダン状態管理統合 (TanStack Query + Zustand)
 
-- [ ] Categories用フック (`src/app/_hooks/`)
-  - [ ] useCategories() - カテゴリ一覧
-  - [ ] useCreateCategory() - カテゴリ作成
-  - [ ] useUpdateCategory(id) - カテゴリ更新
-  - [ ] useDeleteCategory(id) - カテゴリ削除
+**前提条件**: Phase 2c (Modern State Management Setup) 完了
+
+- [ ] Categories Query/Mutation フック (`src/queries/categories-queries.ts`)
+  - [ ] `useCategories()` - 自動キャッシング・背景同期付きカテゴリ一覧
+  - [ ] `useCreateCategory()` - 楽観的更新付きカテゴリ作成
+  - [ ] `useUpdateCategory(id)` - 楽観的更新付きカテゴリ更新
+  - [ ] `useDeleteCategory()` - 楽観的更新付きカテゴリ削除
+
+- [ ] カテゴリ関連クライアント状態拡張 (`src/stores/`)
+  - [ ] `useUIStore()` - カテゴリモーダル状態管理
+  - [ ] `useFilterStore()` - カテゴリフィルター状態拡張
+  - [ ] `useFormStore()` - カテゴリフォームドラフト機能
 
 ## 3.2 検索機能
 
@@ -165,9 +172,13 @@
   - [ ] 検索とフィルターの組み合わせ
   - [ ] URL パラメーター連携
 
-- [ ] 検索用カスタムフック
-  - [ ] useTaskSearch() - 検索状態管理
-  - [ ] useSearchHistory() - 検索履歴管理
+- [ ] 検索用モダン状態管理統合
+  - [ ] **TanStack Query**: `useTasks({ search: query })` で検索結果キャッシング
+  - [ ] **Zustand拡張**: `useFilterStore()` に検索状態追加
+    - [ ] `searchQuery: string`
+    - [ ] `setSearchQuery: (query: string) => void`
+    - [ ] `searchHistory: string[]` (localStorage連携)
+  - [ ] **Debounced Query**: 検索入力の最適化
 
 ## 3.3 データエクスポート・インポート
 
@@ -186,9 +197,10 @@
 
 - [ ] ExportModal コンポーネント (`src/app/_components/ExportModal.tsx`)
   - [ ] エクスポート形式選択 (JSON/CSV)
-  - [ ] フィルター条件指定 (全て/完了済み/未完了等)
+  - [ ] **フィルター状態連携**: `useFilterStore()` でエクスポート条件指定
+  - [ ] **TanStack Mutation**: `useExportTasks()` で楽観的UI更新
   - [ ] ダウンロード実行
-  - [ ] 進行状況表示
+  - [ ] **UI状態管理**: `useUIStore()` でモーダル・ローディング状態
 
 ### インポート機能
 
@@ -201,9 +213,12 @@
 
 - [ ] ImportModal コンポーネント (`src/app/_components/ImportModal.tsx`)
   - [ ] ファイルアップロード (drag & drop対応)
+  - [ ] **Form状態管理**: `useFormStore()` でアップロード状態管理
   - [ ] プレビュー機能 (インポート前確認)
+  - [ ] **TanStack Mutation**: `useImportTasks()` で楽観的更新
   - [ ] 重複処理オプション
   - [ ] インポート実行・結果表示
+  - [ ] **キャッシュ無効化**: インポート後の自動データ更新
 
 ### データ管理ページ
 
@@ -249,17 +264,22 @@
   - [ ] 不要なデータ取得の削減
   - [ ] ページネーション準備
 
-### フロントエンド最適化
+### モダンフロントエンド最適化 (TanStack Query + Zustand)
 
-- [ ] Client Component最適化
-  - [ ] React.memo() 適用
-  - [ ] useMemo, useCallback 最適化
-  - [ ] 不要な re-render 防止
+- [ ] **TanStack Query最適化**
+  - [ ] **Selective re-rendering**: `select` オプションでデータ変換
+  - [ ] **Background updates**: `staleTime`, `cacheTime` 最適化
+  - [ ] **Query invalidation**: 効率的なキャッシュ無効化
 
-- [ ] ローディング・エラー状態改善
-  - [ ] Skeleton UI 実装
-  - [ ] Error Boundary 実装 (error.tsx)
-  - [ ] Loading状態の統一 (loading.tsx)
+- [ ] **Zustand最適化**
+  - [ ] **Shallow equality**: 不要な再レンダリング防止
+  - [ ] **Store slicing**: 大きなストアの分割
+  - [ ] **Selective subscriptions**: 必要な状態のみ購読
+
+- [ ] ローディング・エラー状態の統一化
+  - [ ] **TanStack Query states**: `isLoading`, `isFetching`, `isError`
+  - [ ] **UI Store integration**: グローバルローディング状態
+  - [ ] Skeleton UI 実装 (shadcn/ui Skeleton)
 
 ### Next.js App Router 最適化 (WANT)
 
@@ -268,9 +288,11 @@
   - [ ] インタラクションは Client Component
   - [ ] "use client" の最小化
 
-- [ ] 基本的なキャッシング活用
-  - [ ] `revalidatePath()` での適切なキャッシュ無効化
-  - [ ] Static vs Dynamic の適切な分離
+- [ ] **TanStack Query + Next.js 統合キャッシング**
+  - [ ] **Server Component**: 初期データプリフェッチ
+  - [ ] **TanStack Query**: クライアントサイドキャッシング
+  - [ ] **Hybrid approach**: SSR初期データ + CSRリアルタイム更新
+  - [ ] `revalidatePath()` との協調動作
 
 ## 3.6 テスト・品質保証
 
@@ -291,10 +313,62 @@
 - [ ] 検索機能テスト
 - [ ] エクスポート・インポートテスト
 
+### 高度機能エラーハンドリング
+
+- [ ] 検索機能エラー処理
+  - [ ] 検索結果なし時の適切なメッセージ表示
+  - [ ] 検索クエリ不正時のバリデーションエラー
+  - [ ] 検索タイムアウト時のフォールバック
+
+- [ ] エクスポート・インポートエラー処理
+  - [ ] ファイルサイズ制限エラー (10MB上限)
+  - [ ] 不正ファイル形式エラーとサポート形式表示
+  - [ ] インポートデータバリデーションエラー詳細
+  - [ ] 部分インポート失敗時の成功・失敗レポート
+  - [ ] ネットワークエラー時のファイル破損防止
+
+- [ ] カテゴリ機能エラー処理
+  - [ ] 同名カテゴリ作成エラーと代替案提示
+  - [ ] 使用中カテゴリ削除時の警告と移行オプション
+  - [ ] 色選択競合時の自動調整機能
+
 ### 性能テスト
 
 - [ ] 大量データでのパフォーマンス確認
 - [ ] 検索機能のレスポンス時間測定
+
+### パフォーマンス詳細テスト
+
+- [ ] 検索パフォーマンステスト
+  - [ ] 1000タスク規模での部分一致検索 (500ms以内)
+  - [ ] リアルタイム検索の debounce 効果測定
+  - [ ] 日本語・英語・特殊文字での検索性能確認
+
+- [ ] エクスポート・インポート性能
+  - [ ] 1000タスクのJSONエクスポート (10秒以内)
+  - [ ] 1000タスクのCSVエクスポート (10秒以内)
+  - [ ] 大量データインポート時のバリデーション性能
+- [ ] カテゴリ管理性能
+  - [ ] 50カテゴリでのフィルタリング性能
+  - [ ] カテゴリ一覧表示性能 (タスク数計算含む)
+
+### アクセシビリティテスト追加 (Phase 4機能)
+
+- [ ] 検索機能のアクセシビリティ
+  - [ ] 検索結果のライブリージョン通知
+  - [ ] 検索フィールドのaria-describedby設定
+  - [ ] 検索結果ナビゲーションのキーボード操作
+  - [ ] 検索候補選択の矢印キー操作
+
+- [ ] カテゴリ管理のアクセシビリティ
+  - [ ] 色選択UIのキーボード・スクリーンリーダー対応
+  - [ ] カテゴリバッジの色情報テキスト併記
+  - [ ] カテゴリ削除時の確認ダイアログアクセシビリティ
+
+- [ ] エクスポート・インポートのアクセシビリティ
+  - [ ] ファイルドラッグ&ドロップの代替手段
+  - [ ] 進行状況の視覚・音声両対応
+  - [ ] エラー・成功メッセージのスクリーンリーダー通知
 
 ## 3.7 Phase 3 完了チェック
 

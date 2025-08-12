@@ -174,66 +174,84 @@ sequenceDiagram
 
 ### ディレクトリ構造
 
-#### 基本構造 (Next.js 15 App Router + Best Practices)
+#### 現在の構造 (Next.js 15 App Router) - Phase 1 完了時点
 
 ```
 src/
 ├── app/                       # Next.js App Router
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── page.tsx
-│   ├── loading.tsx            # グローバルローディング
-│   ├── error.tsx              # グローバルエラー
-│   ├── not-found.tsx          # グローバル404
-│   ├── tasks/
-│   │   ├── page.tsx
-│   │   ├── loading.tsx        # タスク一覧ローディング
-│   │   ├── error.tsx          # タスク一覧エラー
-│   │   ├── not-found.tsx      # タスク404
-│   │   ├── [id]/
-│   │   │   ├── page.tsx
-│   │   │   ├── loading.tsx    # 詳細ページローディング
-│   │   │   └── error.tsx      # 詳細ページエラー
-│   │   └── new/
-│   │       ├── page.tsx
-│   │       └── error.tsx      # 新規作成エラー
-│   ├── categories/
-│   │   ├── page.tsx
-│   │   ├── loading.tsx
-│   │   ├── error.tsx
+│   ├── globals.css           # グローバルスタイル
+│   ├── layout.tsx            # ルートレイアウト
+│   ├── page.tsx              # ホームページ
+│   ├── favicon.ico           # ファビコン
+│   ├── auth/                 # 認証関連ページ
+│   │   └── error/
+│   │       └── page.tsx      # OAuth認証エラー処理ページ
+│   ├── api/                  # API Routes
+│   │   └── auth/
+│   │       └── [...nextauth]/
+│   │           └── route.ts  # NextAuth.js v5 API endpoints
+│   └── _components/          # 再利用可能なコンポーネント (プライベート)
+│       └── AuthButton.tsx    # 認証ボタンコンポーネント (Server Component)
+├── generated/prisma/         # 生成されたPrismaクライアント (カスタムパス)
+│   ├── index.js             # メインPrismaクライアント
+│   ├── client.js            # クライアントモジュール
+│   ├── edge.js              # Edge Runtime対応
+│   ├── wasm.js              # WebAssembly サポート
+│   └── runtime/             # Prisma ランタイムファイル群
+└── auth.ts                   # NextAuth.js v5 設定ファイル
+```
+
+#### Phase 1 完了項目 (認証機能)
+
+現在実装済みの基本認証機能：
+
+- **NextAuth.js v5**: GitHub/Google OAuth認証システム
+- **Session Management**: PostgreSQL + Prisma Adapter によるデータベースセッション
+- **Route Protection**: 認証状態に応じたページアクセス制御
+- **Error Handling**: OAuth認証エラー専用ページ（`/auth/error`）
+- **Development Environment**: Docker + HTTPS対応の開発環境
+
+#### 将来実装予定の構造 (Phase 2-6)
+
+```
+src/app/
+├── _lib/                    # ユーティリティライブラリ (Phase 2)
+│   ├── utils.ts            # 汎用ユーティリティ関数
+│   ├── validations.ts      # Zod バリデーションスキーマ
+│   ├── db.ts              # Prisma クライアントインスタンス
+│   └── types.ts           # TypeScript 型定義
+├── _hooks/                 # カスタムReactフック (Phase 3)
+│   ├── useTasks.ts        # タスク操作フック
+│   └── useCategories.ts   # カテゴリ操作フック
+├── tasks/                  # タスク管理ページ (Phase 3)
+│   ├── page.tsx           # タスク一覧ページ
+│   ├── [id]/
+│   │   └── page.tsx       # タスク詳細・編集ページ
+│   └── new/
+│       └── page.tsx       # 新規タスク作成ページ
+├── categories/             # カテゴリ管理ページ (Phase 4)
+│   ├── page.tsx           # カテゴリ一覧ページ
+│   └── [id]/
+│       └── page.tsx       # カテゴリ詳細ページ
+├── api/
+│   ├── tasks/             # タスクAPI Routes (Phase 3)
+│   │   ├── route.ts       # GET(一覧), POST(作成)
 │   │   └── [id]/
-│   │       ├── page.tsx
-│   │       ├── loading.tsx
-│   │       └── error.tsx
-│   ├── api/
-│   │   ├── tasks/
-│   │   │   ├── route.ts
-│   │   │   └── [id]/
-│   │   │       └── route.ts
-│   │   └── categories/
-│   │       ├── route.ts
-│   │       └── [id]/
-│   │           └── route.ts
-│   ├── _components/           # 再利用可能なコンポーネント (プライベート)
-│   │   ├── ui/                # shadcn/ui コンポーネント
-│   │   ├── TaskCard.tsx
-│   │   ├── TaskForm.tsx
-│   │   ├── TaskList.tsx
-│   │   ├── CategoryBadge.tsx
-│   │   └── SearchBar.tsx
-│   ├── _lib/                  # ユーティリティ (プライベート)
-│   │   ├── utils.ts
-│   │   ├── validations.ts     # Zod schemas
-│   │   ├── db.ts             # Prisma client
-│   │   └── types.ts          # TypeScript types
-│   └── _hooks/               # Custom hooks (プライベート)
-│       ├── useTasks.ts
-│       ├── useCategories.ts
-│       └── useLocalStorage.ts
-└── prisma/
-    ├── schema.prisma
-    ├── migrations/
-    └── seed.ts
+│   │       └── route.ts   # GET(詳細), PUT(更新), DELETE(削除)
+│   └── categories/        # カテゴリAPI Routes (Phase 4)
+│       ├── route.ts       # GET(一覧), POST(作成)
+│       └── [id]/
+│           └── route.ts   # GET(詳細), PUT(更新), DELETE(削除)
+└── _components/
+    ├── ui/                # shadcn/ui コンポーネント (Phase 2)
+    │   ├── button.tsx     # ボタンコンポーネント
+    │   ├── card.tsx       # カードコンポーネント
+    │   ├── form.tsx       # フォームコンポーネント
+    │   └── ...           # その他UIコンポーネント
+    ├── TaskCard.tsx       # タスク表示カード (Phase 3)
+    ├── TaskForm.tsx       # タスク入力フォーム (Phase 3)
+    ├── TaskList.tsx       # タスク一覧表示 (Phase 3)
+    └── CategorySelector.tsx # カテゴリ選択 (Phase 4)
 ```
 
 #### オプション: ルートグループによる論理的整理
